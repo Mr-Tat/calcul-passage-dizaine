@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Passage de dizaine — v1.6.9</title>
+<title>Passage de dizaine — v1.7.0</title>
 <style>
 :root{
   --text:#202331;--muted:#62687a;--ink:#11131b;--line:#aeb4c4;
@@ -188,7 +188,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   <button id="masterBtn" class="master-btn" type="button" aria-pressed="false" title="Master mode">M</button>
   <section id="homeView" class="home">
     <div class="home-shell">
-      <div class="home-brand"><h1>Passage de dizaine</h1><span class="home-version">v1.6.9</span></div>
+      <div class="home-brand"><h1>Passage de dizaine</h1><span class="home-version">v1.7.0</span></div>
       <div class="home-top">
         <div class="home-copy">
           <h2>4 activités, un parcours simple</h2>
@@ -292,7 +292,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
         <div id="sessionNote" class="session-note">15 calculs · 5 séries</div>
       </aside>
     </div>
-    <div class="footer">Projet <strong>passage-dizaine</strong> · v1.6.9</div>
+    <div class="footer">Projet <strong>passage-dizaine</strong> · v1.7.0</div>
   </section>
 
   <div id="celebration" class="celebration" aria-hidden="true"><div class="bravo">Bravo ! 🎉</div></div>
@@ -311,7 +311,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
 <script>
 (() => {
   const TOTAL_SERIES=5, PER_SERIES=3, TOTAL=TOTAL_SERIES*PER_SERIES, PASS_SCORE=Math.ceil(TOTAL*.8);
-  const ACTIVITY_ORDER=['add','addmix','sub','submix'], STORAGE_KEY='passageDizaine.unlockLevel.v1', MASTER_SESSION_KEY='passageDizaine.masterMode.v1';
+  const ACTIVITY_ORDER=['add','addmix','sub','submix'], STORAGE_KEY='passageDizaine.unlockLevel.v1', MASTER_SESSION_KEY='passageDizaine.masterMode.v1', MASTER_PASSWORD='Thecakeisalie';
   const homeView=document.getElementById('homeView'),practiceView=document.getElementById('practiceView'),root=document.getElementById('exercises'),masterBtn=document.getElementById('masterBtn');
   const activityTitle=document.getElementById('activityTitle'),seriesPill=document.getElementById('seriesPill'),scorePill=document.getElementById('scorePill'),sessionNote=document.getElementById('sessionNote');
   const keypadContext=document.getElementById('keypadContext'),keypadButtons=[...document.querySelectorAll('#keypadGrid button')];
@@ -597,7 +597,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   function titleFor(mode){return {sub:'Soustraire en passant une dizaine',add:'Additionner en passant une dizaine',submix:'Soustraire : avec ou sans passage',addmix:'Additionner : avec ou sans passage'}[mode]}
   function showPractice(mode){activity=mode;practiceView.dataset.activity=mode;activityTitle.textContent=titleFor(mode);homeView.classList.add('hidden');practiceView.classList.remove('hidden');newGame()}
   function showHome(){practiceView.classList.add('hidden');homeView.classList.remove('hidden');activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks()}
-  masterBtn.addEventListener('click',()=>{masterMode=!masterMode;persistMasterMode(masterMode);syncMasterButton();renderHomeLocks()});document.querySelectorAll('[data-start-activity]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.startActivity;if(ACTIVITY_ORDER.indexOf(mode)<=effectiveUnlockLevel())showPractice(mode)}));document.getElementById('homeBtn').addEventListener('click',showHome);document.getElementById('newGameBtn').addEventListener('click',newGame);syncMasterButton();updateStatus();setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks();
+  masterBtn.addEventListener('click',()=>{if(masterMode){masterMode=false;persistMasterMode(false);syncMasterButton();renderHomeLocks();return}const entered=window.prompt('Mot de passe Master Mode :');if(entered===null)return;if(entered===MASTER_PASSWORD){masterMode=true;persistMasterMode(true);syncMasterButton();renderHomeLocks()}else{window.alert('Mot de passe incorrect.')}});document.querySelectorAll('[data-start-activity]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.startActivity;if(ACTIVITY_ORDER.indexOf(mode)<=effectiveUnlockLevel())showPractice(mode)}));document.getElementById('homeBtn').addEventListener('click',showHome);document.getElementById('newGameBtn').addEventListener('click',newGame);syncMasterButton();updateStatus();setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks();
 })();
 </script>
 </body>
