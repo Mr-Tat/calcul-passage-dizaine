@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Passage de dizaine — v1.4.4</title>
+<style>
+:root{
+  --text:#202331;--muted:#62687a;--ink:#11131b;--line:#aeb4c4;
+  --accent:#5966c7;--accent-dark:#4652ad;
+  --red:#b83349;--red-soft:#efc4cb;--blue:#2f65ae;--blue-soft:#bfd3ee;
+  --blue-2:#5f8fc9;--blue-2-soft:#d3e2f3;--mauve:#a27adf;--indigo:#5867c8;--green:#2f7b68;--gold:#d5a934;
+  --lav:#c7c2e7;--peach:#e7b9aa;--sage:#a8cdbf;--sky:#b9cbe8;--sand:#e5cfad;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{
+  margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);
+  background:
+    radial-gradient(circle at 8% 6%,rgba(231,185,170,.92) 0 9%,transparent 28%),
+    radial-gradient(circle at 92% 12%,rgba(168,205,191,.86) 0 10%,transparent 30%),
+    radial-gradient(circle at 74% 90%,rgba(199,194,231,.9) 0 13%,transparent 34%),
+    linear-gradient(135deg,#becbe4 0%,#d9c8df 47%,#c4d7d2 100%);
+  background-attachment:fixed;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 47px,rgba(255,255,255,.24) 48px 49px),
+    repeating-linear-gradient(90deg,transparent 0 47px,rgba(255,255,255,.16) 48px 49px),
+    radial-gradient(circle at 18% 76%,transparent 0 78px,rgba(255,255,255,.24) 79px 82px,transparent 83px),
+    radial-gradient(circle at 82% 34%,transparent 0 112px,rgba(78,90,134,.10) 113px 116px,transparent 117px);
+}
+button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display:none!important}
+.app{position:relative;z-index:1;width:100%;min-height:100%}
+
+/* Accueil */
+.home{padding:clamp(20px,4vw,52px)}
+.home-shell{max-width:1120px;margin:0 auto}
+.home-brand{display:flex;align-items:baseline;gap:10px;margin-bottom:28px}.home-brand h1{margin:0;font-size:clamp(2rem,4vw,3.15rem);letter-spacing:-.035em}.home-version{font-size:.84rem;color:#50576b;font-weight:700}
+.home-intro{max-width:720px;margin-bottom:26px}.home-intro h2{margin:0 0 6px;font-size:clamp(1.25rem,2vw,1.75rem)}.home-intro p{margin:0;color:#4e5667;font-size:1rem;line-height:1.48}
+.activity-grid{display:grid;grid-template-columns:repeat(2,minmax(280px,1fr));gap:18px}
+.activity-card{position:relative;isolation:isolate;overflow:hidden;min-height:250px;border:2px solid rgba(77,83,111,.2);border-radius:28px;padding:24px;box-shadow:0 20px 45px rgba(62,62,88,.16)}
+.activity-card::before,.activity-card::after{content:"";position:absolute;z-index:-1;border-radius:50%}
+.activity-card::before{width:220px;height:220px;right:-72px;top:-84px;border:34px solid rgba(255,255,255,.3)}
+.activity-card::after{width:160px;height:160px;left:-70px;bottom:-92px;background:rgba(255,255,255,.18)}
+.activity-card.sub{background:linear-gradient(145deg,#eab8b5 0%,#c8d2ee 52%,#aed0c5 100%)}
+.activity-card.add{background:linear-gradient(145deg,#a9cfc2 0%,#c8bfe6 52%,#e6c39f 100%)}
+.activity-icon{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;border:2px solid rgba(41,47,69,.2);border-radius:14px;margin-bottom:17px;background:rgba(255,255,255,.48);box-shadow:0 5px 13px rgba(61,66,91,.08);font-size:1.05rem;font-weight:950;letter-spacing:.01em;color:#30374a}
+.activity-card h3{margin:0 0 8px;font-size:1.45rem;letter-spacing:-.02em}.activity-card p{max-width:460px;margin:0 0 17px;color:#3f4758;line-height:1.45}.activity-meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}.tag{padding:5px 9px;border:1px solid rgba(58,64,87,.2);border-radius:999px;background:rgba(255,255,255,.45);font-size:.78rem;font-weight:850;color:#3e4658}
+.start-activity{min-height:46px;padding:9px 17px;border:1px solid #414d9f;border-radius:12px;background:#515fc0;color:#fff;box-shadow:0 6px 14px rgba(65,77,159,.22)}
+
+.progress-rule{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:7px 11px;border:1px solid rgba(67,75,107,.22);border-radius:12px;background:rgba(255,255,255,.38);font-size:.82rem;font-weight:900;color:#3d4659}
+.activity-card{transition:transform .2s ease,filter .2s ease,opacity .2s ease,box-shadow .2s ease}
+.activity-card.unlocked-next{animation:newCardGlow 1.2s ease-in-out 2}
+@keyframes newCardGlow{0%,100%{transform:translateY(0);box-shadow:0 20px 45px rgba(62,62,88,.16)}50%{transform:translateY(-5px) scale(1.015);box-shadow:0 24px 54px rgba(74,82,154,.32)}}
+.activity-card.locked-activity{filter:saturate(.45);opacity:.72}
+.activity-card.locked-activity::after{background:rgba(255,255,255,.12)}
+.activity-card.locked-activity .start-activity{background:#7d8397;border-color:#6e7487;box-shadow:none;cursor:not-allowed}
+.lock-status{display:flex;align-items:center;gap:7px;min-height:31px;margin-top:-7px;margin-bottom:12px;color:#424a5d;font-size:.78rem;font-weight:900}
+.lock-status .lock-dot{width:9px;height:9px;border-radius:50%;background:#3e8a6f;box-shadow:0 0 0 4px rgba(62,138,111,.14)}
+.locked-activity .lock-status .lock-dot{background:#7d8394;box-shadow:0 0 0 4px rgba(125,131,148,.13)}
+.lock-badge{position:absolute;right:16px;top:16px;z-index:3;padding:7px 10px;border:1px solid rgba(63,70,94,.28);border-radius:999px;background:rgba(55,62,82,.84);color:#fff;font-size:.75rem;font-weight:950;box-shadow:0 6px 14px rgba(40,45,68,.18)}
+.activity-card.locked-activity{filter:saturate(.28) brightness(.94);opacity:.64}
+.activity-card.locked-activity .activity-icon,.activity-card.locked-activity h3,.activity-card.locked-activity p,.activity-card.locked-activity .activity-meta{opacity:.72}
+.activity-card.locked-activity .start-activity{background:#767c8d;border-color:#696f80;color:#f5f6f9;box-shadow:none;cursor:not-allowed}
+
+.unlock-overlay{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:22px;background:rgba(31,35,57,.48);backdrop-filter:blur(6px);overflow:hidden}
+.unlock-overlay.hidden{display:none!important}.unlock-overlay.show .unlock-card{animation:unlockPop 2.9s cubic-bezier(.2,.85,.24,1) forwards}.unlock-card{position:relative;width:min(620px,92vw);padding:34px 28px 30px;border:3px solid rgba(255,255,255,.72);border-radius:30px;background:linear-gradient(145deg,#b8d8cc 0%,#c9c2ea 48%,#eac6a7 100%);box-shadow:0 28px 80px rgba(24,28,54,.35);text-align:center;transform:scale(.55);opacity:0;overflow:hidden}
+.unlock-card::before{content:"";position:absolute;inset:-80px;background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,255,255,.42) 9% 14%,transparent 15% 24%,rgba(255,255,255,.28) 25% 31%,transparent 32% 100%);animation:unlockSpin 7s linear infinite;z-index:-1}
+.unlock-kicker{font-size:.9rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:#46506b}.unlock-icon{display:inline-grid;place-items:center;min-width:112px;min-height:64px;margin:13px 0 10px;padding:8px 18px;border:2px solid rgba(54,61,92,.22);border-radius:18px;background:rgba(255,255,255,.65);font-size:1.55rem;font-weight:1000;color:#30384d}.unlock-title{margin:0;font-size:clamp(1.8rem,4vw,3rem);line-height:1.02;letter-spacing:-.035em}.unlock-sub{margin:12px auto 0;max-width:470px;font-size:1rem;font-weight:800;color:#465065}.unlock-score{display:inline-block;margin-top:14px;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.65);border:1px solid rgba(59,66,96,.18);font-weight:950}.unlock-star{position:absolute;width:12px;height:12px;border-radius:3px;background:#fff;opacity:0;animation:unlockStar 1.8s ease-out forwards}
+@keyframes unlockPop{0%{opacity:0;transform:scale(.55) rotate(-3deg)}12%{opacity:1;transform:scale(1.08) rotate(1deg)}22%{transform:scale(.98) rotate(0)}82%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}@keyframes unlockSpin{to{transform:rotate(360deg)}}@keyframes unlockStar{0%{opacity:0;transform:translateY(30px) scale(.2) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translateY(-170px) scale(1.25) rotate(220deg)}}
+
+/* Activité */
+.practice{padding:6px 8px 8px}
+.topbar{display:flex;align-items:center;gap:8px;min-height:46px;margin-bottom:6px;padding:5px 7px;border:1px solid rgba(88,95,124,.24);border-radius:15px;background:rgba(246,245,251,.84);backdrop-filter:blur(8px);box-shadow:0 7px 18px rgba(65,65,92,.10)}
+.home-btn,.new-game{min-height:34px;padding:5px 9px;border-radius:9px}.home-btn{border:1px solid #aaaec1;background:rgba(255,255,255,.68);color:#364054}.new-game{border:1px solid #4652a5;background:#5865bc;color:white}
+.activity-title{font-size:1rem;font-weight:950;white-space:nowrap}.statusbar{margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap}.status-pill{min-height:34px;padding:5px 9px;border:1px solid rgba(81,88,116,.22);border-radius:10px;background:rgba(255,255,255,.58);font-size:.82rem;font-weight:900}.score-pill{background:#e9d8ae}.series-pill{background:#c9c9e9}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 222px;gap:8px;align-items:start}.exercises{display:flex;gap:6px;min-width:0;align-items:flex-start}
+.exercise{position:relative;isolation:isolate;min-width:0;overflow:visible;flex:1 1 0;padding:5px;border:1px solid rgba(74,81,111,.22);border-radius:16px;background:rgba(250,249,252,.83);box-shadow:0 7px 16px rgba(55,57,82,.08);transition:flex-grow .16s ease,opacity .16s ease,background .16s ease}
+.exercise::after{content:"";position:absolute;z-index:-1;width:120px;height:120px;right:-58px;bottom:-60px;border-radius:50%;border:18px solid rgba(255,255,255,.22)}
+.practice[data-activity="sub"] .exercise.active{background:linear-gradient(155deg,rgba(239,196,203,.88) 0%,rgba(209,220,242,.9) 48%,rgba(191,220,210,.86) 100%)}
+.practice[data-activity="add"] .exercise.active{background:linear-gradient(155deg,rgba(190,219,208,.9) 0%,rgba(207,199,235,.9) 50%,rgba(234,205,169,.88) 100%)}
+.exercise.active{flex-grow:1.1;border-color:rgba(67,74,105,.34);box-shadow:0 10px 24px rgba(52,54,80,.14)}.exercise.inactive{background:transparent;border-color:transparent;box-shadow:none;flex-grow:.95}.exercise .focus-content{transition:opacity .16s ease,filter .16s ease}.exercise.inactive .focus-content{opacity:.045;filter:saturate(.2);pointer-events:none}.exercise.inactive .calc{opacity:1;cursor:pointer}
+.exercise-head{display:flex;align-items:center;min-height:47px}.calc-line{width:100%;min-width:0}.calc{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:clamp(2rem,2.55vw,2.72rem);line-height:1;font-weight:950;color:#11141d}.result-slot{display:inline-flex;align-items:stretch;overflow:hidden;height:46px;min-width:62px;border:2px solid rgba(75,81,105,.34);border-radius:10px;background:rgba(255,255,255,.84);outline:none;cursor:text;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}.result-slot .digit{width:31px;display:grid;place-items:center;font-size:1.72rem;font-weight:950}.result-slot .tens{background:var(--red-soft);color:var(--red)}.result-slot .ones{background:var(--blue-soft);color:var(--blue)}.result-slot.ready{border-color:#d8eb47;box-shadow:0 0 0 4px rgba(216,235,71,.35),0 0 18px rgba(216,235,71,.38);transform:translateY(-1px)}.result-slot.ready:focus{box-shadow:0 0 0 5px rgba(216,235,71,.42),0 0 22px rgba(216,235,71,.46)}.result-slot.locked{cursor:default}
+.board{position:relative;min-width:0;overflow:visible}.board svg{display:block;width:100%;height:auto;overflow:visible}.step-text{text-align:center;min-height:20px;margin-top:-3px;font-size:.88rem;font-weight:900;color:#343b4c}.digit-entry{width:56px;height:48px;display:grid;place-items:center;border:2px solid #9299aa;border-radius:11px;background:rgba(255,255,255,.92);color:#30394a;font-size:1.52rem;font-weight:950;user-select:none;cursor:text;outline:none}.digit-entry:focus{outline:3px solid rgba(81,95,192,.22);border-color:#5360b7}.digit-entry.locked{background:rgba(243,244,247,.88);color:#3d4656;cursor:default}.pulse{animation:pulse 1.05s ease-in-out infinite alternate}@keyframes pulse{from{box-shadow:0 0 0 0 rgba(81,95,192,.08)}to{box-shadow:0 0 0 6px rgba(81,95,192,.12)}}.prompt-zone{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;border:2px solid;border-radius:11px;padding:5px 7px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 5px 12px rgba(42,46,65,.08)}.prompt-zone.blue-step{background:#c7d8ed;border-color:#2f65ae}.prompt-zone.blue2-step{background:#d3e2f3;border-color:#5f8fc9}.prompt-label{width:100%;text-align:center;font-size:11.5px;font-weight:950;line-height:1.05;margin-bottom:4px;white-space:nowrap}.blue-step .prompt-label{color:#245590}.blue2-step .prompt-label{color:#3f6f9f}.prompt-zone .digit-entry{width:50px;height:40px;font-size:1.34rem;border-radius:9px}
+.zone{height:100%;border:2px solid;border-radius:11px;padding:7px 8px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 5px 12px rgba(42,46,65,.08)}.zone.red{background:#edc1c8;border-color:var(--red)}.zone.blue{background:#bdd2ee;border-color:var(--blue)}.zone-label{font-size:13px;font-weight:950;line-height:1.05;margin-bottom:5px;white-space:nowrap}.zone.red .zone-label{color:#9f2537}.zone.blue .zone-label{color:#245590}.decade-select{width:100%;min-height:34px;padding:4px 6px;border:1px solid #8f98aa;border-radius:8px;background:rgba(255,255,255,.9);font-size:.9rem;font-weight:900;color:#263044}.comp-row{display:flex;align-items:center;gap:5px}.comp-row .arrow{font-size:1.15rem;font-weight:950}.reset{width:100%;min-height:29px;margin-top:1px;padding:3px 6px;border:1px solid rgba(79,86,112,.22);border-radius:9px;background:rgba(255,255,255,.52);color:#41495a;font-size:.76rem}
+
+/* Outils de droite */
+.side-tools{position:sticky;top:6px;display:grid;gap:7px}.tool-card{border:1px solid rgba(69,76,106,.28);border-radius:16px;background:linear-gradient(155deg,rgba(228,225,241,.94),rgba(217,228,236,.92));box-shadow:0 8px 20px rgba(52,54,80,.12);padding:8px}.keypad-title{text-align:center;font-size:1rem;font-weight:950}.keypad-context{text-align:center;min-height:18px;margin:2px 0 6px;color:#52596c;font-size:.77rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.keypad-grid button{min-height:48px;padding:0;border:1px solid #aeb4c2;border-radius:10px;background:rgba(255,255,255,.72);color:#242c3a;font-size:1.4rem;font-weight:950}.keypad-grid button:active{background:#d9dced}.keypad-grid button:disabled{opacity:.27;cursor:default}.keypad-grid .wide{grid-column:span 2}.keypad-hint{margin-top:5px;text-align:center;color:#666d7c;font-size:.64rem;line-height:1.2}.mirror-final{display:none}.mirror-final.visible{display:grid;gap:6px}.mirror-title{text-align:center;font-size:.72rem;font-weight:950;color:#596072;text-transform:uppercase;letter-spacing:.035em}.mirror-zone{border:2px solid;border-radius:12px;padding:7px 8px}.mirror-zone.red{background:#edc1c8;border-color:var(--red)}.mirror-zone.blue{background:#bdd2ee;border-color:var(--blue)}.mirror-zone .zone-label{margin-bottom:5px}.mirror-decade{width:100%;min-height:36px;border:1px solid #8f98aa;border-radius:8px;background:#fff;padding:4px 7px;font-weight:900}.mirror-comp-row{display:flex;align-items:center;justify-content:center;gap:7px}.mirror-comp{width:62px;height:51px}.mirror-placeholder{text-align:center;color:#687081;font-size:.7rem;line-height:1.28;padding:2px 1px}.session-note{text-align:center;color:#50586a;font-size:.73rem;font-weight:800;margin-top:3px}.footer{text-align:center;color:#61687a;font-size:.66rem;margin-top:2px}
+.celebration{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}.bravo{position:absolute;top:12%;left:50%;transform:translateX(-50%) scale(.8);padding:8px 13px;border:3px solid var(--gold);border-radius:16px;background:#fff;color:var(--green);font-size:clamp(1.15rem,2.4vw,1.85rem);font-weight:950;opacity:0;box-shadow:0 10px 24px rgba(0,0,0,.13)}.celebration.show .bravo{animation:bravoPop 1.5s ease-out forwards}@keyframes bravoPop{0%{opacity:0;transform:translateX(-50%) scale(.75)}18%{opacity:1;transform:translateX(-50%) scale(1.07)}78%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.96)}}.confetti-piece{position:absolute;width:8px;height:13px;opacity:0;border-radius:2px;animation:confettiFall 1550ms linear forwards}@keyframes confettiFall{0%{opacity:1;transform:translateY(-10vh) rotate(0)}100%{opacity:0;transform:translateY(105vh) rotate(720deg)}}
+.series-flash{position:fixed;left:50%;top:16%;z-index:60;transform:translateX(-50%) scale(.85);padding:10px 16px;border-radius:15px;background:#fff;border:2px solid #8b91aa;font-size:1.2rem;font-weight:950;opacity:0;pointer-events:none}.series-flash.show{animation:seriesPop 1.25s ease-out forwards}@keyframes seriesPop{0%{opacity:0;transform:translateX(-50%) scale(.8)}15%{opacity:1;transform:translateX(-50%) scale(1.05)}78%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(.98)}}
+@media(prefers-reduced-motion:reduce){.pulse,.celebration.show .bravo,.confetti-piece,.series-flash.show,.unlock-card,.unlock-star,.activity-card.unlocked-next{animation:none}}
+@media(max-width:1180px){.workspace{grid-template-columns:minmax(0,1fr) 205px}.calc{font-size:clamp(1.75rem,2.35vw,2.3rem)}}
+
+.activity-section{margin-top:22px}.activity-section:first-of-type{margin-top:0}.activity-section-title{display:flex;align-items:center;gap:9px;margin:0 0 10px;font-size:.9rem;font-weight:950;color:#3f465a;text-transform:uppercase;letter-spacing:.055em}.activity-section-title::after{content:"";height:1px;flex:1;background:rgba(70,77,106,.24)}
+.activity-card.submix{background:linear-gradient(145deg,#d8b8bf 0%,#c4d5eb 48%,#b5d0c6 100%)}.activity-card.addmix{background:linear-gradient(145deg,#b1d0c4 0%,#c8bee2 50%,#dec09f 100%)}
+.practice[data-activity="submix"] .exercise.active{background:linear-gradient(155deg,rgba(239,196,203,.88) 0%,rgba(209,220,242,.9) 48%,rgba(191,220,210,.86) 100%)}.practice[data-activity="addmix"] .exercise.active{background:linear-gradient(155deg,rgba(190,219,208,.9) 0%,rgba(207,199,235,.9) 50%,rgba(234,205,169,.88) 100%)}
+.decision-view{min-height:420px;display:grid;place-items:center;padding:18px}.decision-card{width:min(330px,92%);padding:22px;border:2px solid rgba(79,86,118,.28);border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(232,235,247,.9));box-shadow:0 12px 28px rgba(58,61,91,.12);text-align:center}.decision-title{font-size:1.24rem;font-weight:950;margin-bottom:6px}.decision-sub{color:#596174;font-size:.84rem;font-weight:750;margin-bottom:15px}.decision-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.decision-actions button{min-height:50px;border:1px solid #8e96ad;border-radius:13px;background:rgba(255,255,255,.88);color:#2e3648;font-size:1rem;font-weight:950}.decision-actions button:hover{background:#eef0f8}.decision-feedback{min-height:20px;margin-top:9px;color:#9f2537;font-size:.82rem;font-weight:900}
+.no-pass-view{min-height:420px;display:grid;align-content:center;gap:16px;padding:18px}.no-pass-note{text-align:center;color:#4e5669;font-size:.86rem;font-weight:850}.no-pass-zones{display:grid;grid-template-columns:minmax(120px,170px) minmax(170px,230px);justify-content:center;gap:16px}.no-pass-zone{min-height:102px;border:2px solid;border-radius:15px;padding:11px 12px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 7px 16px rgba(48,52,78,.08)}.no-pass-zone.red{background:#edc1c8;border-color:var(--red)}.no-pass-zone.blue{background:#bdd2ee;border-color:var(--blue)}.decade-fixed{display:grid;place-items:center;min-height:38px;padding:4px 12px;border:1px solid #9b7a82;border-radius:9px;background:rgba(255,255,255,.82);color:#9f2537;font-size:1.16rem;font-weight:950}.unit-entry{margin-top:2px}.mirror-decade-fixed{min-height:36px;width:100%;display:grid;place-items:center;border:1px solid #9b7a82;border-radius:8px;background:#fff;color:#9f2537;font-size:1.05rem;font-weight:950}
+@media(max-width:560px){.no-pass-zones{grid-template-columns:1fr}.decision-view,.no-pass-view{min-height:360px;padding:10px}}
+
+
+/* Raffinement visuel v1.4 : droite numérique classique, mais plus soignée */
+.exercise{background:rgba(247,248,252,.88);border-color:rgba(70,79,112,.22);box-shadow:0 10px 26px rgba(50,57,88,.10)}
+.practice[data-activity="sub"] .exercise.active,
+.practice[data-activity="add"] .exercise.active,
+.practice[data-activity="submix"] .exercise.active,
+.practice[data-activity="addmix"] .exercise.active{
+  background:
+    radial-gradient(circle at 11% 11%,rgba(196,205,239,.48) 0 12%,transparent 32%),
+    radial-gradient(circle at 88% 84%,rgba(180,216,209,.42) 0 10%,transparent 30%),
+    linear-gradient(155deg,rgba(250,250,255,.96),rgba(228,232,248,.94) 53%,rgba(225,239,236,.92));
+}
+.exercise.active::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:repeating-linear-gradient(135deg,transparent 0 38px,rgba(88,103,160,.035) 39px 40px)}
+.topbar{border-color:rgba(76,86,122,.24);background:linear-gradient(135deg,rgba(249,250,255,.9),rgba(230,233,247,.88));box-shadow:0 9px 24px rgba(54,61,91,.11)}
+.tool-card{border-color:rgba(72,82,119,.24);background:linear-gradient(155deg,rgba(244,246,255,.95),rgba(222,229,244,.94) 54%,rgba(221,238,234,.92));box-shadow:0 11px 28px rgba(48,57,91,.13)}
+.keypad-grid button{border-color:#9da7c0;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(232,236,247,.92));box-shadow:0 3px 0 rgba(92,103,139,.18),0 5px 11px rgba(50,58,90,.08);transition:transform .08s ease,box-shadow .08s ease,background .12s ease}
+.keypad-grid button:hover:not(:disabled){background:linear-gradient(180deg,#fff,#e3e8f7)}
+.keypad-grid button:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 rgba(92,103,139,.16)}
+.prompt-zone,.zone,.no-pass-zone,.mirror-zone{box-shadow:0 7px 17px rgba(45,53,84,.10),inset 0 1px 0 rgba(255,255,255,.5)}
+.prompt-zone.blue-step{background:linear-gradient(145deg,#d6e5f5,#b8d0ec);border-color:#2f65ae}
+.prompt-zone.blue2-step{background:linear-gradient(145deg,#e0ebf7,#c9dcef);border-color:#5f8fc9}
+.zone.red,.no-pass-zone.red,.mirror-zone.red{background:linear-gradient(145deg,#f1d0d5,#e9b9c2);border-color:var(--red)}
+.zone.blue,.no-pass-zone.blue,.mirror-zone.blue{background:linear-gradient(145deg,#d5e4f5,#b9d0ed);border-color:var(--blue)}
+.result-slot{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 12px rgba(52,60,90,.08)}
+.activity-card{box-shadow:0 22px 50px rgba(55,62,92,.18),inset 0 1px 0 rgba(255,255,255,.38)}
+.start-activity{box-shadow:0 8px 18px rgba(65,77,159,.24),inset 0 1px 0 rgba(255,255,255,.18)}
+
+.master-btn{position:fixed;left:8px;bottom:8px;z-index:180;width:30px;height:30px;padding:0;border:1px solid rgba(55,63,92,.22);border-radius:9px;background:rgba(255,255,255,.12);color:#30384f;font-size:.78rem;font-weight:1000;opacity:.07;box-shadow:none;transition:opacity .16s ease,background .16s ease,transform .16s ease,border-color .16s ease}.master-btn:hover,.master-btn:focus-visible{opacity:.96;background:rgba(255,255,255,.92);border-color:rgba(55,63,92,.42);outline:none;transform:translateY(-1px)}.master-btn.active{opacity:.34;background:rgba(207,199,235,.72);border-color:rgba(88,102,190,.48)}.master-btn.active:hover,.master-btn.active:focus-visible{opacity:1}.master-btn::after{content:"";position:absolute;inset:-5px;border-radius:12px;pointer-events:none}
+@media(max-width:980px){.workspace{grid-template-columns:1fr}.side-tools{position:static;grid-template-columns:210px 1fr}.activity-grid{grid-template-columns:1fr}.exercises{gap:5px}}
+@media(max-width:760px){.exercises{display:grid;grid-template-columns:1fr}.exercise.inactive{display:none}.side-tools{grid-template-columns:1fr}.topbar{flex-wrap:wrap}.statusbar{width:100%;margin-left:0}.activity-title{white-space:normal}}
+</style>
+</head>
+<body>
+<main class="app">
+  <button id="masterBtn" class="master-btn" type="button" aria-pressed="false" title="Master mode">M</button>
+  <section id="homeView" class="home">
+    <div class="home-shell">
+      <div class="home-brand"><h1>Passage de dizaine</h1><span class="home-version">v1.4.4</span></div>
+      <div class="home-intro"><h2>Un parcours en 4 étapes</h2><p>Commence par l’addition, puis apprends à reconnaître s’il faut passer une dizaine. La soustraction arrive ensuite avec la même progression.</p><div class="progress-rule">🔓 Pour débloquer l’étape suivante : au moins 12/15 (80 %) sans erreur.</div></div>
+      <div class="activity-section">
+        <div class="activity-section-title">1 · Addition</div>
+        <div class="activity-grid">
+          <article class="activity-card add" data-activity-card="add">
+            <div class="lock-badge hidden" data-lock-badge>🔒 Verrouillée</div>
+            <div class="activity-icon">+ avec passage</div>
+            <h3>Additionner en passant une dizaine</h3>
+            <p>Complète la dizaine, ajoute le reste, puis construis le résultat.</p>
+            <div class="activity-meta"><span class="tag">Étape 1</span><span class="tag">15 calculs</span><span class="tag">5 séries</span></div>
+            <div class="lock-status"><span class="lock-dot"></span><span data-lock-text>Disponible</span></div>
+            <button class="start-activity" type="button" data-start-activity="add">Commencer</button>
+          </article>
+          <article class="activity-card addmix locked-activity" data-activity-card="addmix">
+            <div class="lock-badge" data-lock-badge>🔒 Verrouillée</div>
+            <div class="activity-icon">+ passage ou pas ?</div>
+            <h3>Additionner : avec ou sans passage</h3>
+            <p>Décide d’abord s’il faut franchir une dizaine. Sans passage, calcule directement les unités.</p>
+            <div class="activity-meta"><span class="tag">Étape 2</span><span class="tag">15 calculs</span><span class="tag">avec + sans passage</span></div>
+            <div class="lock-status"><span class="lock-dot"></span><span data-lock-text>À débloquer</span></div>
+            <button class="start-activity" type="button" data-start-activity="addmix" disabled>🔒 À débloquer</button>
+          </article>
+        </div>
+      </div>
+      <div class="activity-section">
+        <div class="activity-section-title">2 · Soustraction</div>
+        <div class="activity-grid">
+          <article class="activity-card sub locked-activity" data-activity-card="sub">
+            <div class="lock-badge" data-lock-badge>🔒 Verrouillée</div>
+            <div class="activity-icon">− avec passage</div>
+            <h3>Soustraire en passant une dizaine</h3>
+            <p>Rejoins la dizaine, enlève le reste, puis construis le résultat.</p>
+            <div class="activity-meta"><span class="tag">Étape 3</span><span class="tag">15 calculs</span><span class="tag">5 séries</span></div>
+            <div class="lock-status"><span class="lock-dot"></span><span data-lock-text>À débloquer</span></div>
+            <button class="start-activity" type="button" data-start-activity="sub" disabled>🔒 À débloquer</button>
+          </article>
+          <article class="activity-card submix locked-activity" data-activity-card="submix">
+            <div class="lock-badge" data-lock-badge>🔒 Verrouillée</div>
+            <div class="activity-icon">− passage ou pas ?</div>
+            <h3>Soustraire : avec ou sans passage</h3>
+            <p>Décide s’il faut franchir une dizaine. Sans passage, la dizaine reste déjà écrite.</p>
+            <div class="activity-meta"><span class="tag">Étape 4</span><span class="tag">15 calculs</span><span class="tag">avec + sans passage</span></div>
+            <div class="lock-status"><span class="lock-dot"></span><span data-lock-text>À débloquer</span></div>
+            <button class="start-activity" type="button" data-start-activity="submix" disabled>🔒 À débloquer</button>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="practiceView" class="practice hidden" data-activity="sub">
+    <div class="topbar">
+      <button id="homeBtn" class="home-btn" type="button">← Accueil</button>
+      <div id="activityTitle" class="activity-title">Soustraire en passant une dizaine</div>
+      <div class="statusbar">
+        <div id="seriesPill" class="status-pill series-pill">Série 1/5</div>
+        <div id="scorePill" class="status-pill score-pill">Score 0/15</div>
+        <button id="newGameBtn" class="new-game" type="button">Nouvelle partie</button>
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div id="exercises" class="exercises" aria-label="Trois exercices"></div>
+      <aside class="side-tools">
+        <section class="tool-card">
+          <div class="keypad-title">Clavier numérique</div>
+          <div id="keypadContext" class="keypad-context">Choisis une case</div>
+          <div id="keypadGrid" class="keypad-grid" aria-label="Clavier numérique">
+            <button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
+            <button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
+            <button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
+            <button class="wide" type="button" data-digit="0">0</button><button type="button" data-backspace="1">⌫</button>
+          </div>
+          <div class="keypad-hint">Le clavier physique fonctionne aussi. Aucun champ système n’est ouvert.</div>
+        </section>
+        <section class="tool-card">
+          <div id="mirrorFinal" class="mirror-final">
+            <div class="mirror-title">Étape en cours</div>
+            <div id="mirrorRedZone" class="mirror-zone red">
+              <div id="mirrorRedLabel" class="zone-label">Dizaine d’arrivée</div>
+              <select id="mirrorDecade" class="mirror-decade" aria-label="Dizaine d’arrivée"><option value="">Choisir…</option></select><div id="mirrorDecadeFixed" class="mirror-decade-fixed hidden"></div>
+            </div>
+            <div id="mirrorBlueZone" class="mirror-zone blue">
+              <div id="mirrorBlueLabel" class="zone-label">Complément</div>
+              <div class="mirror-comp-row"><span>→</span><div id="mirrorComp" class="digit-entry mirror-comp" tabindex="0" role="textbox" aria-label="Valeur"></div></div>
+            </div>
+          </div>
+          <div id="mirrorPlaceholder" class="mirror-placeholder">Les cases rouge et bleue apparaîtront ici au bon moment.</div>
+        </section>
+        <div id="sessionNote" class="session-note">15 calculs · 5 séries</div>
+      </aside>
+    </div>
+    <div class="footer">Projet <strong>passage-dizaine</strong> · v1.4.4</div>
+  </section>
+
+  <div id="celebration" class="celebration" aria-hidden="true"><div class="bravo">Bravo ! 🎉</div></div>
+  <div id="seriesFlash" class="series-flash" aria-hidden="true"></div>
+  <div id="unlockOverlay" class="unlock-overlay hidden" aria-live="assertive" aria-hidden="true">
+    <div class="unlock-card">
+      <div class="unlock-kicker">Nouvelle activité débloquée !</div>
+      <div id="unlockIcon" class="unlock-icon">+</div>
+      <h2 id="unlockTitle" class="unlock-title">Activité débloquée</h2>
+      <div id="unlockSub" class="unlock-sub">Tu peux passer à l’étape suivante.</div>
+      <div id="unlockScore" class="unlock-score">12/15 · objectif atteint</div>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+  const TOTAL_SERIES=5, PER_SERIES=3, TOTAL=TOTAL_SERIES*PER_SERIES, PASS_SCORE=Math.ceil(TOTAL*.8);
+  const ACTIVITY_ORDER=['add','addmix','sub','submix'], STORAGE_KEY='passageDizaine.unlockLevel.v1', MASTER_SESSION_KEY='passageDizaine.masterMode.v1';
+  const homeView=document.getElementById('homeView'),practiceView=document.getElementById('practiceView'),root=document.getElementById('exercises'),masterBtn=document.getElementById('masterBtn');
+  const activityTitle=document.getElementById('activityTitle'),seriesPill=document.getElementById('seriesPill'),scorePill=document.getElementById('scorePill'),sessionNote=document.getElementById('sessionNote');
+  const keypadContext=document.getElementById('keypadContext'),keypadButtons=[...document.querySelectorAll('#keypadGrid button')];
+  const mirrorFinal=document.getElementById('mirrorFinal'),mirrorPlaceholder=document.getElementById('mirrorPlaceholder'),mirrorRedZone=document.getElementById('mirrorRedZone'),mirrorRedLabel=document.getElementById('mirrorRedLabel'),mirrorDecade=document.getElementById('mirrorDecade'),mirrorDecadeFixed=document.getElementById('mirrorDecadeFixed'),mirrorBlueZone=document.getElementById('mirrorBlueZone'),mirrorBlueLabel=document.getElementById('mirrorBlueLabel'),mirrorComp=document.getElementById('mirrorComp');
+  const celebration=document.getElementById('celebration'),seriesFlash=document.getElementById('seriesFlash');
+  const unlockOverlay=document.getElementById('unlockOverlay'),unlockIcon=document.getElementById('unlockIcon'),unlockTitle=document.getElementById('unlockTitle'),unlockSub=document.getElementById('unlockSub'),unlockScore=document.getElementById('unlockScore');
+  const colors=['#5966c7','#b83349','#2f7b68','#d6923a','#8d63b9','#d76188'];
+  let activity='add',problems=[],currentSeries=0,score=0,activePanel=null,activeController=null,activeEntry=null,autoAdvanceTimer=null,seriesAdvanceTimer=null,mathasSaved=false;
+
+  const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+  const baseType=mode=>mode.startsWith('sub')?'sub':'add';
+  const isMixed=mode=>mode.endsWith('mix');
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  function readUnlockLevel(){try{const n=Number(localStorage.getItem(STORAGE_KEY));return Number.isInteger(n)?Math.max(0,Math.min(ACTIVITY_ORDER.length-1,n)):0}catch(e){return 0}}
+  function saveUnlockLevel(n){try{localStorage.setItem(STORAGE_KEY,String(n))}catch(e){}}
+  function readMasterMode(){try{return sessionStorage.getItem(MASTER_SESSION_KEY)==='1'}catch(e){return false}}
+  function persistMasterMode(on){try{if(on)sessionStorage.setItem(MASTER_SESSION_KEY,'1');else sessionStorage.removeItem(MASTER_SESSION_KEY)}catch(e){}}
+  function enregistrerScoreMathas(scoreObtenu, scoreMaximum, niveau) {
+    const key = "mathas_scores_" + window.location.pathname.toLowerCase();
+    let scores = [];
+    try {
+      scores = JSON.parse(localStorage.getItem(key)) || [];
+    } catch {
+      scores = [];
+    }
+    scores.unshift({
+      score: scoreObtenu,
+      total: scoreMaximum,
+      niveau,
+      date: new Date().toISOString()
+    });
+    try {
+      localStorage.setItem(key, JSON.stringify(scores.slice(0, 3)));
+    } catch (e) {}
+  }
+  let unlockLevel=readUnlockLevel(),masterMode=readMasterMode(),highlightMode=null;
+  const effectiveUnlockLevel=()=>masterMode?ACTIVITY_ORDER.length-1:unlockLevel;
+  function syncMasterButton(){masterBtn.classList.toggle('active',masterMode);masterBtn.setAttribute('aria-pressed',masterMode?'true':'false');masterBtn.title=masterMode?'Master mode actif — cliquer pour désactiver':'Master mode — tout déverrouiller pour cette session'}
+  const activityLabel=mode=>({add:'+ avec passage',addmix:'+ passage ou pas ?',sub:'− avec passage',submix:'− passage ou pas ?'}[mode]);
+  function renderHomeLocks(){
+    document.querySelectorAll('[data-activity-card]').forEach(card=>{
+      const mode=card.dataset.activityCard,idx=ACTIVITY_ORDER.indexOf(mode),locked=idx>effectiveUnlockLevel(),btn=card.querySelector('[data-start-activity]'),txt=card.querySelector('[data-lock-text]');
+      card.classList.toggle('locked-activity',locked);const badge=card.querySelector('[data-lock-badge]');if(badge)badge.classList.toggle('hidden',!locked);btn.disabled=locked;btn.textContent=locked?'🔒 À débloquer':'Commencer';txt.textContent=locked?'Obtiens 12/15 à l’étape précédente':'Disponible';
+      card.classList.toggle('unlocked-next',mode===highlightMode&&!locked);
+    });
+    if(highlightMode)setTimeout(()=>{document.querySelectorAll('.unlocked-next').forEach(c=>c.classList.remove('unlocked-next'));highlightMode=null},2600);
+  }
+  function showUnlock(mode,earned){
+    highlightMode=mode;showHome();renderHomeLocks();unlockIcon.textContent=activityLabel(mode);unlockTitle.textContent=titleFor(mode);unlockSub.textContent='Objectif atteint : l’étape suivante est maintenant disponible.';unlockScore.textContent=earned+'/'+TOTAL+' · au moins 80 %';
+    unlockOverlay.querySelectorAll('.unlock-star').forEach(n=>n.remove());for(let i=0;i<46;i++){const s=document.createElement('div');s.className='unlock-star';s.style.left=(Math.random()*100).toFixed(1)+'%';s.style.top=(55+Math.random()*38).toFixed(1)+'%';s.style.background=colors[i%colors.length];s.style.animationDelay=(Math.random()*700)+'ms';unlockOverlay.appendChild(s)}
+    unlockOverlay.classList.remove('hidden');unlockOverlay.setAttribute('aria-hidden','false');requestAnimationFrame(()=>unlockOverlay.classList.add('show'));
+    setTimeout(()=>{unlockOverlay.classList.remove('show');setTimeout(()=>{unlockOverlay.classList.add('hidden');unlockOverlay.setAttribute('aria-hidden','true');unlockOverlay.querySelectorAll('.unlock-star').forEach(n=>n.remove())},220)},3050);
+  }
+
+  function generateProblem(type,passes=true){
+    if(type==='sub'){
+      const tens=rand(2,9);
+      if(passes){const units=rand(1,8),b=rand(units+1,9);return {a:tens*10+units,b,passes:true}}
+      const units=rand(3,9),b=rand(2,units-1);return {a:tens*10+units,b,passes:false};
+    }
+    const tens=rand(1,8);
+    if(passes){const units=rand(2,9),minB=Math.max(2,11-units),b=rand(minB,9);return {a:tens*10+units,b,passes:true}}
+    const units=rand(1,7),b=rand(2,9-units);return {a:tens*10+units,b,passes:false};
+  }
+  function generateSession(mode){
+    const type=baseType(mode),mixed=isMixed(mode),out=[],seen=new Set();
+    const addUnique=passes=>{let guard=0;while(guard++<200){const p=generateProblem(type,passes),key=p.a+'|'+p.b;if(!seen.has(key)){seen.add(key);out.push(p);return}}};
+    if(!mixed){while(out.length<TOTAL)addUnique(true);return out}
+    for(let s=0;s<TOTAL_SERIES;s++){
+      const flags=shuffle(s%2===0?[true,true,false]:[true,false,false]);
+      flags.forEach(addUnique);
+    }
+    return out;
+  }
+
+  function subSvg(slot){return `
+    <svg viewBox="0 0 560 470" role="img" aria-label="Soustraction sur une droite numérique verticale">
+      <defs>
+        <linearGradient id="axis-${slot}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#65718f"/><stop offset=".5" stop-color="#3f4b68"/><stop offset="1" stop-color="#65718f"/></linearGradient>
+        <filter id="shadow-${slot}" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#374466" flood-opacity=".22"/></filter>
+        <marker id="full-${slot}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" overflow="visible"><path d="M0,0 L10,5 L0,10 Z" fill="#8c79d9"/></marker>
+        <marker id="s1-${slot}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" overflow="visible"><path d="M0,0 L10,5 L0,10 Z" fill="#2f65ae"/></marker>
+        <marker id="s2-${slot}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" overflow="visible"><path d="M0,0 L10,5 L0,10 Z" fill="#5f8fc9"/></marker>
+      </defs>
+      <line x1="280" y1="50" x2="280" y2="417" stroke="#c7cfe2" stroke-width="10" stroke-linecap="round" opacity=".34"/>
+      <line x1="280" y1="50" x2="280" y2="417" stroke="url(#axis-${slot})" stroke-width="5" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <line x1="252" y1="58" x2="308" y2="58" stroke="#586681" stroke-width="5" stroke-linecap="round"/>
+      <text data-k="topLabel" x="236" y="69" text-anchor="end" font-size="30" font-weight="950" fill="#20283a"></text>
+      <line x1="238" y1="202" x2="322" y2="202" stroke="#b83349" stroke-width="7" stroke-linecap="round"/>
+      <text data-k="tenLabel" x="220" y="213" text-anchor="end" font-size="28" font-weight="950" fill="#9f2537"></text>
+      <path d="M400 54 C440 120 442 286 405 382" fill="none" stroke="#d7cef5" stroke-width="13" stroke-linecap="round" opacity=".55"/>
+      <path d="M400 54 C440 120 442 286 405 382" fill="none" stroke="#8c79d9" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <path d="M405 382 L403.1 362 L419.9 368.4 Z" fill="#8c79d9" stroke="#8c79d9" stroke-width="2" stroke-linejoin="round" filter="url(#shadow-${slot})"/>
+      <text data-k="fullLabel" x="468" y="238" font-size="30" font-weight="950" fill="#7767c8"></text>
+      <g data-k="seg1" class="hidden"><path d="M350 56 C380 98 380 157 350 198" fill="none" stroke="#d6e5f6" stroke-width="12" stroke-linecap="round" opacity=".65"/><path d="M350 56 C380 98 380 157 350 198" fill="none" stroke="#2f65ae" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <path d="M350 198 L353.4 178.2 L367.9 188.8 Z" fill="#2f65ae" stroke="#2f65ae" stroke-width="2" stroke-linejoin="round" filter="url(#shadow-${slot})"/>
+      <foreignObject x="398" y="88" width="140" height="82"><div xmlns="http://www.w3.org/1999/xhtml" class="prompt-zone blue-step"><div class="prompt-label">Jusqu’à la dizaine</div><div data-k="first" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Nombre à enlever pour atteindre la dizaine"></div></div></foreignObject></g>
+      <g data-k="seg2" class="hidden"><path d="M350 222 C380 270 380 336 350 390" fill="none" stroke="#e1edf8" stroke-width="12" stroke-linecap="round" opacity=".7"/><path d="M350 222 C380 270 380 336 350 390" fill="none" stroke="#5f8fc9" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <path d="M350 390 L350.9 369.9 L366.6 378.6 Z" fill="#5f8fc9" stroke="#5f8fc9" stroke-width="2" stroke-linejoin="round" filter="url(#shadow-${slot})"/>
+      <foreignObject x="398" y="286" width="140" height="82"><div xmlns="http://www.w3.org/1999/xhtml" class="prompt-zone blue2-step"><div class="prompt-label">Reste à enlever</div><div data-k="second" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Reste à enlever"></div></div></foreignObject></g>
+      <g data-k="resultMark" class="hidden"><line x1="252" y1="392" x2="308" y2="392" stroke="#5f8fc9" stroke-width="5" stroke-linecap="round"/><text data-k="ghost" x="238" y="402" text-anchor="end" font-size="27" font-weight="950" fill="#46526a">?</text></g>
+      <foreignObject data-k="redZone" class="hidden" x="32" y="260" width="168" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone red"><div class="zone-label">Dizaine d’arrivée</div><select data-k="decade" class="decade-select" aria-label="Dizaine d’arrivée"><option value="">Choisir…</option></select></div></foreignObject>
+      <foreignObject data-k="blueZone" class="hidden" x="330" y="375" width="172" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone blue"><div class="zone-label">Complément de <span data-k="remaining"></span></div><div class="comp-row"><span class="arrow">→</span><div data-k="comp" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Complément"></div></div></div></foreignObject>
+    </svg>`}
+
+  function addSvg(slot){return `
+    <svg viewBox="0 0 560 470" role="img" aria-label="Addition sur une droite numérique verticale">
+      <defs>
+        <linearGradient id="axis-${slot}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#65718f"/><stop offset=".5" stop-color="#3f4b68"/><stop offset="1" stop-color="#65718f"/></linearGradient>
+        <filter id="shadow-${slot}" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#374466" flood-opacity=".22"/></filter>
+        <marker id="full-${slot}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" overflow="visible"><path d="M0,0 L10,5 L0,10 Z" fill="#8c79d9"/></marker>
+        <marker id="s1-${slot}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" overflow="visible"><path d="M0,0 L10,5 L0,10 Z" fill="#2f65ae"/></marker>
+        <marker id="s2-${slot}" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse" overflow="visible"><path d="M0,0 L10,5 L0,10 Z" fill="#5f8fc9"/></marker>
+      </defs>
+      <line x1="280" y1="50" x2="280" y2="417" stroke="#c7cfe2" stroke-width="10" stroke-linecap="round" opacity=".34"/>
+      <line x1="280" y1="50" x2="280" y2="417" stroke="url(#axis-${slot})" stroke-width="5" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <line x1="252" y1="405" x2="308" y2="405" stroke="#586681" stroke-width="5" stroke-linecap="round"/>
+      <text data-k="startLabel" x="236" y="416" text-anchor="end" font-size="30" font-weight="950" fill="#20283a"></text>
+      <line x1="238" y1="245" x2="322" y2="245" stroke="#b83349" stroke-width="7" stroke-linecap="round"/>
+      <path d="M405 405 C442 318 442 155 400 68" fill="none" stroke="#d7cef5" stroke-width="13" stroke-linecap="round" opacity=".55"/>
+      <path d="M405 405 C442 318 442 155 400 68" fill="none" stroke="#8c79d9" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <path d="M400 68 L415.9 80.3 L399.7 88.1 Z" fill="#8c79d9" stroke="#8c79d9" stroke-width="2" stroke-linejoin="round" filter="url(#shadow-${slot})"/>
+      <text data-k="fullLabel" x="468" y="252" font-size="30" font-weight="950" fill="#7767c8"></text>
+      <g data-k="seg1" class="hidden"><path d="M350 405 C380 355 380 295 350 250" fill="none" stroke="#d6e5f6" stroke-width="12" stroke-linecap="round" opacity=".65"/><path d="M350 405 C380 355 380 295 350 250" fill="none" stroke="#2f65ae" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <path d="M350 250 L367.5 260 L352.5 270 Z" fill="#2f65ae" stroke="#2f65ae" stroke-width="2" stroke-linejoin="round" filter="url(#shadow-${slot})"/>
+      <foreignObject x="398" y="298" width="140" height="82"><div xmlns="http://www.w3.org/1999/xhtml" class="prompt-zone blue-step"><div class="prompt-label">Complète la dizaine</div><div data-k="first" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Complément jusqu'à la dizaine"></div></div></foreignObject></g>
+      <g data-k="seg2" class="hidden"><path d="M350 225 C380 182 380 125 350 82" fill="none" stroke="#e1edf8" stroke-width="12" stroke-linecap="round" opacity=".7"/><path d="M350 225 C380 182 380 125 350 82" fill="none" stroke="#5f8fc9" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
+      <path d="M350 82 L367.7 91.6 L352.9 101.9 Z" fill="#5f8fc9" stroke="#5f8fc9" stroke-width="2" stroke-linejoin="round" filter="url(#shadow-${slot})"/>
+      <foreignObject x="398" y="112" width="140" height="82"><div xmlns="http://www.w3.org/1999/xhtml" class="prompt-zone blue2-step"><div class="prompt-label">Reste à ajouter</div><div data-k="second" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Reste à ajouter"></div></div></foreignObject></g>
+      <g data-k="resultMark" class="hidden"><line x1="252" y1="82" x2="308" y2="82" stroke="#5f8fc9" stroke-width="5" stroke-linecap="round"/><text data-k="ghost" x="238" y="92" text-anchor="end" font-size="27" font-weight="950" fill="#46526a">?</text></g>
+      <foreignObject data-k="redZone" class="hidden" x="36" y="112" width="174" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone red"><div class="zone-label">Dizaine d’arrivée</div><select data-k="decade" class="decade-select" aria-label="Dizaine d’arrivée"><option value="">Choisir…</option></select></div></foreignObject>
+      <foreignObject data-k="blueZone" class="hidden" x="330" y="78" width="172" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone blue"><div class="zone-label">Reste à ajouter</div><div class="comp-row"><span class="arrow">→</span><div data-k="comp" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Reste à ajouter"></div></div></div></foreignObject>
+    </svg>`}
+
+  function shell(slot,mode){
+    const type=baseType(mode),op=type==='sub'?'−':'+';
+    return `<section class="exercise" data-slot="${slot}" data-finished="0" data-scored="0">
+      <div class="exercise-head"><div class="calc-line"><div class="calc" data-k="calc" tabindex="0" role="button" aria-label="Activer ce calcul"><span data-k="a"></span> ${op} <span data-k="b"></span> = <span class="result-slot" data-k="resultEntry" tabindex="-1" role="textbox" aria-label="Écris la réponse"><span class="digit tens" data-k="ansTens">?</span><span class="digit ones" data-k="ansOnes">?</span></span></div></div></div>
+      <div class="focus-content"><div class="board">
+        <div data-k="decisionView" class="decision-view hidden"><div class="decision-card"><div class="decision-title">Passage de dizaine ?</div><div class="decision-sub">Regarde le calcul avant de choisir.</div><div class="decision-actions"><button type="button" data-choice="yes">Oui</button><button type="button" data-choice="no">Non</button></div><div data-k="decisionFeedback" class="decision-feedback"></div></div></div>
+        <div data-k="passageView">${type==='sub'?subSvg(slot):addSvg(slot)}</div>
+        <div data-k="noPassView" class="no-pass-view hidden"><div class="no-pass-note">Pas de passage : la dizaine reste la même.</div><div class="no-pass-zones"><div class="no-pass-zone red"><div class="zone-label">Dizaine</div><div data-k="fixedDecadeMain" class="decade-fixed"></div></div><div class="no-pass-zone blue"><div data-k="unitLabel" class="zone-label">Unités</div><div data-k="unitEntry" class="digit-entry unit-entry pulse" tabindex="0" role="textbox" aria-label="Chiffre des unités"></div></div></div></div>
+        <div class="step-text" data-k="step" aria-live="polite"></div>
+      </div><button class="reset" data-k="reset" type="button">Recommencer</button></div>
+    </section>`;
+  }
+
+  function setKeypadEnabled(enabled){keypadButtons.forEach(b=>b.disabled=!enabled)}
+  function setMirrorVisible(show){mirrorFinal.classList.toggle('visible',show);mirrorPlaceholder.classList.toggle('hidden',show)}
+  function focusEntry(entry,label){if(!entry||entry.dataset.locked==='1')return;activeEntry=entry;setKeypadEnabled(true);keypadContext.textContent=label;entry.focus({preventScroll:true})}
+  function enterDigit(d){if(!activeEntry||activeEntry.dataset.locked==='1')return;activeEntry._setDigit(Number(d))}
+  function clearDigit(){if(!activeEntry||activeEntry.dataset.locked==='1')return;activeEntry._setDigit(null)}
+  keypadButtons.forEach(btn=>btn.addEventListener('click',()=>btn.dataset.digit!==undefined?enterDigit(btn.dataset.digit):clearDigit()));
+  document.addEventListener('keydown',e=>{if(practiceView.classList.contains('hidden'))return;const tag=document.activeElement?.tagName;if(tag==='SELECT'||tag==='BUTTON')return;if(/^[0-9]$/.test(e.key)){e.preventDefault();enterDigit(e.key)}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();clearDigit()}});
+
+  function activate(panel,{autoStart=false}={}){activePanel=panel;activeController=panel._controller;root.querySelectorAll('.exercise').forEach(p=>{const on=p===panel;p.classList.toggle('active',on);p.classList.toggle('inactive',!on)});syncMirror();if(autoStart&&panel.dataset.finished!=='1')activeController.start()}
+  function syncMirror(){
+    if(!activeController||!activeController.stage3Visible()){setMirrorVisible(false);return}
+    setMirrorVisible(true);
+    mirrorRedZone.classList.toggle('hidden',!activeController.redVisible());
+    const fixed=activeController.redFixedValue();
+    mirrorRedLabel.textContent=fixed===null?'Dizaine d’arrivée':'Dizaine';
+    mirrorDecade.classList.toggle('hidden',fixed!==null);mirrorDecadeFixed.classList.toggle('hidden',fixed===null);
+    if(fixed===null){mirrorDecade.innerHTML=activeController.decadeOptionsHtml();mirrorDecade.value=activeController.decadeValue()}else{mirrorDecadeFixed.textContent=fixed+'…'}
+    mirrorBlueLabel.textContent=activeController.blueLabel();
+    mirrorBlueZone.classList.toggle('hidden',!activeController.blueVisible());
+    mirrorComp.textContent=activeController.blueValue()==null?'':String(activeController.blueValue());
+    const locked=activeController.blueLocked();mirrorComp.dataset.locked=locked?'1':'0';mirrorComp.classList.toggle('locked',locked);mirrorComp.classList.toggle('pulse',!locked);mirrorComp.setAttribute('tabindex',locked?'-1':'0');
+  }
+  function celebrate(){celebration.classList.remove('show');celebration.querySelectorAll('.confetti-piece').forEach(n=>n.remove());for(let i=0;i<32;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=(Math.random()*100).toFixed(1)+'%';p.style.background=colors[i%colors.length];p.style.animationDelay=(Math.random()*190)+'ms';celebration.appendChild(p)}void celebration.offsetWidth;celebration.classList.add('show');setTimeout(()=>{celebration.classList.remove('show');celebration.querySelectorAll('.confetti-piece').forEach(n=>n.remove())},1750)}
+  function flashSeries(text){seriesFlash.textContent=text;seriesFlash.classList.remove('show');void seriesFlash.offsetWidth;seriesFlash.classList.add('show')}
+  function updateStatus(){seriesPill.textContent='Série '+(currentSeries+1)+'/'+TOTAL_SERIES;scorePill.textContent='Score '+score+'/'+TOTAL}
+  function allFinished(){return [...root.querySelectorAll('.exercise')].every(p=>p.dataset.finished==='1')}
+  function activateNext(panel){const panels=[...root.querySelectorAll('.exercise')],start=panels.indexOf(panel);for(let o=1;o<=panels.length;o++){const p=panels[(start+o)%panels.length];if(p.dataset.finished!=='1'){activate(p,{autoStart:true});return}}if(allFinished())finishSeries()}
+  function finishSeries(){
+    activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);
+    if(currentSeries<TOTAL_SERIES-1){flashSeries('Série '+(currentSeries+1)+' terminée ✓');seriesAdvanceTimer=setTimeout(()=>{currentSeries++;updateStatus();loadSeries()},1250);return}
+    const passed=score>=PASS_SCORE,idx=ACTIVITY_ORDER.indexOf(activity);if(!mathasSaved){enregistrerScoreMathas(score,TOTAL,titleFor(activity));mathasSaved=true}flashSeries('Partie terminée : '+score+'/'+TOTAL+(passed?' ✓':' · objectif '+PASS_SCORE+'/'+TOTAL));
+    sessionNote.textContent=passed?'Partie terminée · '+score+'/'+TOTAL+' sans erreur · objectif atteint':'Partie terminée · '+score+'/'+TOTAL+' sans erreur · il faut '+PASS_SCORE+'/'+TOTAL+' pour débloquer la suite';
+    if(passed&&idx>=0&&idx<ACTIVITY_ORDER.length-1&&unlockLevel<idx+1){unlockLevel=idx+1;saveUnlockLevel(unlockLevel);setTimeout(()=>showUnlock(ACTIVITY_ORDER[idx+1],score),900)}
+  }
+
+  function setup(panel,mode){
+    const type=baseType(mode),mixed=isMixed(mode),q=k=>panel.querySelector(`[data-k="${k}"]`);
+    let ex=null,first=0,rem=0,result=0,decade=0,started=false,finished=false,stage3=false,redVisible=false,blueVisible=false,blueVal=null,isPassage=true,classificationDone=!mixed,errorMade=false,solvedTens=false,solvedOnes=false;
+    const markError=()=>{errorMade=true};
+    const resetEntry=el=>{el.textContent='';el.dataset.locked='0';el.classList.remove('locked');el.classList.add('pulse');el.setAttribute('tabindex','0')};
+    function lockEntry(el){el.dataset.locked='1';el.classList.add('locked');el.classList.remove('pulse');el.setAttribute('tabindex','-1');if(activeEntry===el){activeEntry=null;setKeypadEnabled(false)}}
+    function resetResultEntry(){const el=q('resultEntry');el.dataset.value='';el.dataset.locked='0';el.classList.remove('locked','ready','pulse');el.setAttribute('tabindex','-1');q('ansTens').textContent='?';q('ansOnes').textContent='?'}
+    function renderResultValue(str){const s=(str||'').slice(0,2);q('ansTens').textContent=s[0]||'?';q('ansOnes').textContent=s[1]||'?';q('resultEntry').dataset.value=s}
+    function maybeActivateFinal(){if(finished||!(solvedTens&&solvedOnes))return;const el=q('resultEntry');el.classList.add('ready','pulse');el.setAttribute('tabindex','0');q('step').textContent='Écris la réponse';focusEntry(el,'Réponse')}
+    function buildDecades(){const sel=q('decade');sel.innerHTML='<option value="">Choisir…</option>';const near=[];for(let d=1;d<=9;d++){if(decade-d>=0)near.push(decade-d);if(decade+d<=9)near.push(decade+d)}const choices=shuffle([decade,...near.filter(x=>x!==decade).slice(0,4)]);choices.forEach(d=>{const o=document.createElement('option');o.value=String(d);o.textContent=d+'…';sel.appendChild(o)})}
+    function startPassage(){q('passageView').classList.remove('hidden');q('noPassView').classList.add('hidden');q('seg1').classList.remove('hidden');q('step').textContent=type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine';focusEntry(q('first'),type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine')}
+    function unitExpression(){const u=ex.a%10,op=type==='sub'?'−':'+';return 'Unités : '+u+' '+op+' '+ex.b}
+    function startNoPass(){
+      q('passageView').classList.add('hidden');q('noPassView').classList.remove('hidden');stage3=true;redVisible=true;blueVisible=true;blueVal=null;
+      solvedTens=true;q('fixedDecadeMain').textContent=decade+'…';q('unitLabel').textContent=unitExpression();q('step').textContent='Calcule les unités';
+      if(activeController===controller){syncMirror();requestAnimationFrame(()=>focusEntry(mirrorComp,unitExpression()))}else focusEntry(q('unitEntry'),unitExpression());
+    }
+    function choosePassage(choice){
+      if(!mixed||classificationDone)return;
+      const guessed=choice==='yes';
+      if(guessed!==isPassage){markError();q('decisionFeedback').textContent='Essaie encore.';return}
+      classificationDone=true;q('decisionFeedback').textContent='';q('decisionView').classList.add('hidden');
+      isPassage?startPassage():startNoPass();
+    }
+    function evaluateFirst(v){
+      q('first').textContent=v==null?'':String(v);
+      if(v===first){lockEntry(q('first'));q('seg2').classList.remove('hidden');q('resultMark').classList.remove('hidden');q('step').textContent=type==='sub'?'Reste à enlever':'Reste à ajouter';if(type==='add'){stage3=true;blueVisible=true;redVisible=false;blueVal=null;if(activeController===controller)syncMirror()}focusEntry(q('second'),type==='sub'?'Reste à enlever':'Reste à ajouter')}
+      else if(v!==null){markError();q('step').textContent=type==='sub'?'La flèche bleue doit arriver sur '+Math.floor(ex.a/10)*10:'Complète exactement jusqu’à la ligne';focusEntry(q('first'),type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine')}
+    }
+    function evaluateSecond(v){
+      q('second').textContent=v==null?'':String(v);if(type==='add'){blueVal=v;if(activeController===controller)mirrorComp.textContent=v==null?'':String(v)}
+      if(v===rem){lockEntry(q('second'));if(type==='sub'){q('redZone').classList.remove('hidden');q('blueZone').classList.remove('hidden');stage3=true;redVisible=true;blueVisible=true;q('step').textContent='Complément de '+rem+' · puis choisis la dizaine';if(activeController===controller){syncMirror();requestAnimationFrame(()=>focusEntry(mirrorComp,'Complément de '+rem))}else focusEntry(q('comp'),'Complément de '+rem)}else{solvedOnes=true;blueVal=rem;redVisible=true;blueVisible=true;stage3=true;q('redZone').classList.remove('hidden');q('step').textContent='Choisis la dizaine d’arrivée';activeEntry=null;setKeypadEnabled(false);keypadContext.textContent='Choisis la dizaine';if(activeController===controller){syncMirror();requestAnimationFrame(()=>mirrorDecade.focus({preventScroll:true}))}else q('decade').focus({preventScroll:true})}}
+      else if(v!==null){markError();q('step').textContent=type==='sub'?'Cette partie termine la flèche de '+ex.b:'Quel reste faut-il ajouter après la dizaine ?';focusEntry(q('second'),type==='sub'?'Reste à enlever':'Reste à ajouter');if(type==='add'&&activeController===controller)syncMirror()}
+    }
+    function setDecade(value,fromMirror=false){
+      if(!isPassage)return;
+      q('decade').value=value;if(!fromMirror)mirrorDecade.value=value;if(value===''){solvedTens=false;return}
+      if(Number(value)===decade){
+        solvedTens=true;
+        if(type==='sub'){
+          if(!solvedOnes){q('step').textContent='Complément de '+rem;if(activeController===controller){syncMirror();requestAnimationFrame(()=>focusEntry(mirrorComp,'Complément'))}else focusEntry(q('comp'),'Complément')}
+          else maybeActivateFinal();
+        }else{
+          maybeActivateFinal();
+        }
+      }
+      else{markError();solvedTens=false;q('step').textContent='Pas cette dizaine';if(activeController===controller)syncMirror()}
+      if(type==='sub'&&blueVal==null)requestAnimationFrame(()=>activeController===controller?focusEntry(mirrorComp,'Complément de '+rem):focusEntry(q('comp'),'Complément de '+rem));
+    }
+    function setBlue(value,source='main'){
+      if(!isPassage){blueVal=value;q('unitEntry').textContent=value==null?'':String(value);if(activeController===controller)mirrorComp.textContent=value==null?'':String(value);const expected=result%10;if(value===expected){solvedOnes=true;lockEntry(q('unitEntry'));mirrorComp.dataset.locked='1';mirrorComp.classList.add('locked');mirrorComp.classList.remove('pulse');mirrorComp.setAttribute('tabindex','-1');activeEntry=null;setKeypadEnabled(false);maybeActivateFinal()}else if(value!==null){markError();solvedOnes=false;q('step').textContent='Recalcule les unités';focusEntry(source==='mirror'?mirrorComp:q('unitEntry'),unitExpression())}else solvedOnes=false;if(activeController===controller)syncMirror();return}
+      if(type==='add'){evaluateSecond(value);if(activeController===controller)syncMirror();return}
+      blueVal=value;q('comp').textContent=value==null?'':String(value);if(activeController===controller)mirrorComp.textContent=value==null?'':String(value);const expected=10-rem;
+      if(value===expected){solvedOnes=true;lockEntry(q('comp'));mirrorComp.dataset.locked='1';mirrorComp.classList.add('locked');mirrorComp.classList.remove('pulse');mirrorComp.setAttribute('tabindex','-1');activeEntry=null;setKeypadEnabled(false);if(solvedTens)maybeActivateFinal()}
+      else if(value!==null){markError();solvedOnes=false;q('step').textContent='Cherche le complément de '+rem;focusEntry(source==='mirror'?mirrorComp:q('comp'),'Complément')}
+      else solvedOnes=false;if(activeController===controller)syncMirror();
+    }
+    function reset(){
+      ['seg1','seg2','resultMark','redZone','blueZone'].forEach(k=>q(k).classList.add('hidden'));['first','second','comp','unitEntry'].forEach(k=>resetEntry(q(k)));q('decade').value='';resetResultEntry();q('ghost').textContent='?';q('decisionFeedback').textContent='';q('decisionView').classList.add('hidden');q('noPassView').classList.add('hidden');q('passageView').classList.toggle('hidden',mixed);q('step').innerHTML=mixed?'':('Observe la flèche de <strong>'+ex.b+'</strong>.');started=false;finished=false;stage3=false;redVisible=false;blueVisible=false;blueVal=null;solvedTens=false;solvedOnes=false;classificationDone=!mixed;panel.dataset.finished='0';panel.dataset.scored='0';if(activeController===controller){activeEntry=null;setKeypadEnabled(false);syncMirror()}
+    }
+    function load(problem){
+      ex=problem;errorMade=false;isPassage=problem.passes!==false;result=type==='sub'?ex.a-ex.b:ex.a+ex.b;decade=Math.floor(result/10);
+      if(type==='sub'){const ten=Math.floor(ex.a/10)*10;first=ex.a-ten;rem=ex.b-first;q('topLabel').textContent=ex.a;q('tenLabel').textContent=ten;q('remaining').textContent=rem}
+      else{const nextTen=Math.ceil(ex.a/10)*10;first=nextTen-ex.a;rem=ex.b-first;q('startLabel').textContent=ex.a}
+      q('a').textContent=ex.a;q('b').textContent=ex.b;q('fullLabel').textContent=ex.b;buildDecades();reset();
+    }
+    function start(){if(started||finished)return;started=true;if(mixed&&!classificationDone){q('passageView').classList.add('hidden');q('noPassView').classList.add('hidden');q('decisionView').classList.remove('hidden');q('step').textContent='Passage de dizaine ?';activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);return}isPassage?startPassage():startNoPass()}
+    function checkFinal(){
+      const expected=String(decade)+String(result%10);
+      if(q('resultEntry').dataset.value===expected){
+        if(isPassage)q('ghost').textContent=String(result);
+        q('step').textContent='Bravo !';
+        q('resultEntry').dataset.locked='1';q('resultEntry').classList.add('locked');q('resultEntry').classList.remove('pulse');q('resultEntry').setAttribute('tabindex','-1');
+        if(!finished){finished=true;panel.dataset.finished='1';if(panel.dataset.scored!=='1'){panel.dataset.scored='1';if(!errorMade)score++;updateStatus()}celebrate();activeEntry=null;setKeypadEnabled(false);autoAdvanceTimer=setTimeout(()=>activateNext(panel),1050)}
+      }
+    }
+    const controller={start,load,reset,stage3Visible:()=>stage3,redVisible:()=>redVisible,blueVisible:()=>blueVisible,redFixedValue:()=>isPassage?null:decade,blueLabel:()=>!isPassage?unitExpression():(type==='sub'?'Complément de '+rem:'Reste à ajouter'),decadeOptionsHtml:()=>q('decade').innerHTML,decadeValue:()=>q('decade').value,blueValue:()=>!isPassage?blueVal:(type==='add'?(q('second').textContent===''?null:Number(q('second').textContent)):blueVal),blueLocked:()=>!isPassage?q('unitEntry').dataset.locked==='1':(type==='add'?q('second').dataset.locked==='1':q('comp').dataset.locked==='1'),setDecade,setBlue};
+    panel._controller=controller;
+    q('first')._setDigit=evaluateFirst;q('second')._setDigit=evaluateSecond;q('comp')._setDigit=v=>setBlue(v,'main');q('unitEntry')._setDigit=v=>setBlue(v,'main');q('resultEntry')._setDigit=v=>{let cur=q('resultEntry').dataset.value||'';if(v===null)cur=cur.slice(0,-1);else cur=cur.length>=2?String(v):cur+String(v);renderResultValue(cur);if(cur.length===2){const expected=String(decade)+String(result%10);if(cur===expected)checkFinal();else{markError();q('step').textContent='Vérifie la réponse';focusEntry(q('resultEntry'),'Réponse')}}};
+    [q('first'),q('second'),q('comp'),q('unitEntry')].forEach((entry,i)=>{entry.addEventListener('focus',()=>focusEntry(entry,i===0?(type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine'):i===1?(type==='sub'?'Reste à enlever':'Reste à ajouter'):i===2?(type==='sub'?'Complément':'Reste à ajouter'):unitExpression()));entry.addEventListener('click',()=>entry.focus())});
+    q('resultEntry').addEventListener('focus',()=>{if(q('resultEntry').classList.contains('ready')&&q('resultEntry').dataset.locked!=='1')focusEntry(q('resultEntry'),'Réponse')});q('resultEntry').addEventListener('click',()=>{if(q('resultEntry').classList.contains('ready')&&q('resultEntry').dataset.locked!=='1')q('resultEntry').focus()});
+    q('decade').addEventListener('focus',()=>{activeEntry=null;setKeypadEnabled(false);keypadContext.textContent='Choisis la dizaine'});q('decade').addEventListener('change',e=>setDecade(e.target.value,false));
+    q('decisionView').querySelectorAll('[data-choice]').forEach(btn=>btn.addEventListener('click',()=>choosePassage(btn.dataset.choice)));
+    q('reset').addEventListener('click',()=>{reset();start()});q('calc').addEventListener('click',()=>activate(panel,{autoStart:true}));q('calc').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate(panel,{autoStart:true})}});
+  }
+
+  function buildPanels(){root.innerHTML=shell(0,activity)+shell(1,activity)+shell(2,activity);[...root.querySelectorAll('.exercise')].forEach(p=>setup(p,activity))}
+  mirrorDecade.addEventListener('focus',()=>{activeEntry=null;setKeypadEnabled(false);keypadContext.textContent='Choisis la dizaine'});mirrorDecade.addEventListener('change',()=>{if(activeController)activeController.setDecade(mirrorDecade.value,true)});mirrorComp._setDigit=v=>{if(activeController)activeController.setBlue(v,'mirror')};mirrorComp.addEventListener('focus',()=>focusEntry(mirrorComp,activeController?.blueLabel()||'Valeur'));mirrorComp.addEventListener('click',()=>mirrorComp.focus());
+
+  function loadSeries(){if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}if(seriesAdvanceTimer){clearTimeout(seriesAdvanceTimer);seriesAdvanceTimer=null}const panels=[...root.querySelectorAll('.exercise')];panels.forEach((p,i)=>p._controller.load(problems[currentSeries*PER_SERIES+i]));sessionNote.textContent='Série '+(currentSeries+1)+' sur '+TOTAL_SERIES+' · score = calculs sans erreur · objectif '+PASS_SCORE+'/'+TOTAL;activate(panels[0],{autoStart:true})}
+  function newGame(){problems=generateSession(activity);currentSeries=0;score=0;mathasSaved=false;updateStatus();buildPanels();loadSeries()}
+  function titleFor(mode){return {sub:'Soustraire en passant une dizaine',add:'Additionner en passant une dizaine',submix:'Soustraire : avec ou sans passage',addmix:'Additionner : avec ou sans passage'}[mode]}
+  function showPractice(mode){activity=mode;practiceView.dataset.activity=mode;activityTitle.textContent=titleFor(mode);homeView.classList.add('hidden');practiceView.classList.remove('hidden');newGame()}
+  function showHome(){practiceView.classList.add('hidden');homeView.classList.remove('hidden');activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks()}
+  masterBtn.addEventListener('click',()=>{masterMode=!masterMode;persistMasterMode(masterMode);syncMasterButton();renderHomeLocks()});document.querySelectorAll('[data-start-activity]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.startActivity;if(ACTIVITY_ORDER.indexOf(mode)<=effectiveUnlockLevel())showPractice(mode)}));document.getElementById('homeBtn').addEventListener('click',showHome);document.getElementById('newGameBtn').addEventListener('click',newGame);syncMasterButton();updateStatus();setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks();
+})();
+</script>
+</body>
+</html>
