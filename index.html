@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Passage de dizaine — v1.7.2</title>
+<title>Passage de dizaine — v1.7.6</title>
 <style>
 :root{
   --text:#202331;--muted:#62687a;--ink:#11131b;--line:#aeb4c4;
@@ -121,7 +121,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   html,body{height:100%}
   body:has(#homeView:not(.hidden)){overflow:hidden}
   #homeView:not(.hidden){height:100dvh;overflow:hidden;padding:8px 18px 10px}
-  #homeView:not(.hidden) .home-shell{height:100%;max-width:1500px;display:grid;grid-template-rows:auto minmax(0,32vh) auto minmax(0,1fr);gap:0;align-content:stretch}
+  #homeView:not(.hidden) .home-shell{height:100%;max-width:1500px;display:grid;grid-template-rows:auto minmax(0,32vh) auto auto;gap:0;align-content:start}
   #homeView:not(.hidden) .home-brand{margin-bottom:2px;min-height:0}
   #homeView:not(.hidden) .home-brand h1{font-size:clamp(2rem,3vw,2.7rem)}
   #homeView:not(.hidden) .home-top{min-height:0;height:100%;margin:0 0 4px;gap:16px;align-items:center;overflow:hidden}
@@ -137,21 +137,21 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   #homeView:not(.hidden) .preview-image{display:block;width:100%;height:auto;max-height:100%;object-fit:contain;border-radius:16px}
   #homeView:not(.hidden) .menu-head{margin:1px 0 5px;min-height:22px}
   #homeView:not(.hidden) .menu-head h3{font-size:.95rem}
-  #homeView:not(.hidden) .activity-grid{height:100%;min-height:0;gap:9px;align-items:stretch}
-  #homeView:not(.hidden) .activity-card{height:100%;min-height:0;padding:11px 12px 10px;border-radius:16px;display:flex;flex-direction:column}
+  #homeView:not(.hidden) .activity-grid{height:auto;min-height:0;gap:9px;align-items:start}
+  #homeView:not(.hidden) .activity-card{height:auto;min-height:0;padding:11px 12px 10px;border-radius:16px;display:flex;flex-direction:column;align-self:start}
   #homeView:not(.hidden) .step-badge{align-self:flex-start;min-height:27px;padding:3px 8px;margin-bottom:6px;font-size:.69rem}
   #homeView:not(.hidden) .step-badge strong{font-size:.77rem}
   #homeView:not(.hidden) .activity-card h3{margin-bottom:4px;font-size:.98rem;line-height:1.08}
   #homeView:not(.hidden) .activity-card p{margin-bottom:5px;font-size:.74rem;line-height:1.22}
   #homeView:not(.hidden) .lock-status{min-height:18px;margin:0 0 5px;font-size:.66rem}
-  #homeView:not(.hidden) .start-activity{margin-top:auto;width:100%;min-height:42px;padding:7px 10px;border-radius:10px;font-size:.9rem}
+  #homeView:not(.hidden) .start-activity{margin-top:4px;width:100%;min-height:42px;padding:7px 10px;border-radius:10px;font-size:.9rem}
   #homeView:not(.hidden) .lock-badge{right:8px;top:8px;padding:4px 7px;font-size:.61rem}
   #homeView:not(.hidden) .activity-card::before{width:130px;height:130px;right:-58px;top:-62px;border-width:19px}
   #homeView:not(.hidden) .activity-card::after{width:90px;height:90px;left:-42px;bottom:-54px}
 }
 @media (min-width:1000px) and (max-height:760px){
   #homeView:not(.hidden){padding:5px 14px 7px}
-  #homeView:not(.hidden) .home-shell{grid-template-rows:auto minmax(0,28vh) auto minmax(0,1fr)}
+  #homeView:not(.hidden) .home-shell{grid-template-rows:auto minmax(0,28vh) auto auto}
   #homeView:not(.hidden) .home-brand h1{font-size:2rem}
   #homeView:not(.hidden) .home-version{font-size:.58rem}
   #homeView:not(.hidden) .home-copy h2{font-size:1.1rem}
@@ -189,10 +189,10 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
 .exercise-head{display:flex;align-items:center;min-height:47px}.calc-line{width:100%;min-width:0}.calc{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:clamp(2rem,2.55vw,2.72rem);line-height:1;font-weight:950;color:#11141d}.result-slot{display:inline-flex;align-items:stretch;overflow:hidden;height:46px;min-width:62px;border:2px solid rgba(75,81,105,.34);border-radius:10px;background:rgba(255,255,255,.84);outline:none;cursor:text;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease}.result-slot .digit{width:31px;display:grid;place-items:center;font-size:1.72rem;font-weight:950}.result-slot .tens{background:var(--red-soft);color:var(--red)}.result-slot .ones{background:var(--blue-soft);color:var(--blue)}.result-slot.ready{border-color:#d8eb47;box-shadow:0 0 0 4px rgba(216,235,71,.35),0 0 18px rgba(216,235,71,.38);transform:translateY(-1px)}.result-slot.ready:focus{box-shadow:0 0 0 5px rgba(216,235,71,.42),0 0 22px rgba(216,235,71,.46)}.result-slot.direct-win{border-color:#e0ba35;box-shadow:0 0 0 4px rgba(224,186,53,.24),0 0 16px rgba(224,186,53,.24)}.result-slot.direct-win .digit{text-decoration:underline 4px #e0ba35;text-underline-offset:6px}.result-slot.locked{cursor:default}
 .board{position:relative;min-width:0;overflow:visible}.board svg{display:block;width:100%;height:auto;overflow:visible}.step-text{text-align:center;min-height:22px;margin-top:-2px;font-size:1rem;font-weight:950;color:#343b4c}.digit-entry{width:58px;height:50px;display:grid;place-items:center;border:2px solid #9299aa;border-radius:11px;background:rgba(255,255,255,.94);color:#30394a;font-size:1.68rem;font-weight:950;user-select:none;cursor:text;outline:none}.digit-entry:focus{outline:3px solid rgba(81,95,192,.22);border-color:#5360b7}.digit-entry.locked{background:rgba(243,244,247,.9);color:#3d4656;cursor:default}.pulse{animation:pulse 1.05s ease-in-out infinite alternate}@keyframes pulse{from{box-shadow:0 0 0 0 rgba(81,95,192,.08)}to{box-shadow:0 0 0 6px rgba(81,95,192,.12)}}.prompt-zone{position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;border:2px solid;border-radius:11px;padding:5px 7px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 5px 12px rgba(42,46,65,.08)}.prompt-zone.blue-step{background:#c7d8ed;border-color:#2f65ae}.prompt-zone.blue2-step{background:#d3e2f3;border-color:#5f8fc9}.prompt-label{width:100%;text-align:center;font-size:13.5px;font-weight:950;line-height:1.05;margin-bottom:4px;white-space:nowrap}.blue-step .prompt-label{color:#245590}.blue2-step .prompt-label{color:#3f6f9f}.prompt-zone .digit-entry{width:54px;height:43px;font-size:1.55rem;border-radius:9px}
 .zone{position:relative;height:100%;border:2px solid;border-radius:11px;padding:6px 8px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 5px 12px rgba(42,46,65,.08);transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}.zone.red{background:#edc1c8;border-color:var(--red)}.zone.blue{background:#bdd2ee;border-color:var(--blue)}.zone-label{font-size:14.5px;font-weight:950;line-height:1.05;margin-bottom:5px;white-space:nowrap}.zone.red .zone-label{color:#9f2537}.zone.blue .zone-label{color:#245590}.zone.ready-hint,.prompt-zone.ready-hint,.no-pass-zone.ready-hint,.mirror-zone.ready-hint{animation:readyHint 1s ease-in-out infinite alternate;border-color:#e6ef4f !important;box-shadow:0 0 0 6px rgba(230,239,79,.72),0 0 26px rgba(230,239,79,.48),0 5px 12px rgba(42,46,65,.12)}.zone.ready-hint::after,.prompt-zone.ready-hint::after,.no-pass-zone.ready-hint::after,.mirror-zone.ready-hint::after{content:"";position:absolute;inset:-8px;border:4px solid rgba(230,239,79,.96);border-radius:18px;pointer-events:none}.mirror-zone.ready-hint::after{border-radius:16px}.no-pass-zone.ready-hint::after{border-radius:20px}@keyframes readyHint{from{transform:translateY(0) scale(1);filter:saturate(1)}to{transform:translateY(-1px) scale(1.01);filter:saturate(1.12)}}
-.copy-highlight{fill:none;stroke:#e6ef4f;stroke-width:7;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 7px rgba(230,239,79,.9));animation:copyGlow .82s ease-in-out infinite alternate;pointer-events:none}.copy-highlight.hidden{display:none}@keyframes copyGlow{from{stroke:#ddea35;opacity:.72;filter:drop-shadow(0 0 4px rgba(230,239,79,.66))}to{stroke:#f5ff63;opacity:1;filter:drop-shadow(0 0 11px rgba(245,255,99,1))}}.decade-select{width:100%;min-height:42px;padding:4px 8px;border:1px solid #8f98aa;border-radius:8px;background:rgba(255,255,255,.94);font-size:1.28rem;font-weight:950;color:#263044}.decade-select option{font-size:1.15rem;font-weight:900}.comp-row{display:flex;align-items:center;gap:6px}.comp-row .arrow{font-size:1.28rem;font-weight:950}.reset{width:100%;min-height:32px;margin-top:2px;padding:4px 7px;border:1px solid rgba(79,86,112,.22);border-radius:9px;background:rgba(255,255,255,.56);color:#41495a;font-size:.88rem;font-weight:900}
+.copy-highlight{fill:none;stroke:#e6ef4f;stroke-width:7;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 7px rgba(230,239,79,.9));animation:copyGlow .82s ease-in-out infinite alternate;pointer-events:none}.copy-highlight.hidden{display:none}@keyframes copyGlow{from{stroke:#ddea35;opacity:.72;filter:drop-shadow(0 0 4px rgba(230,239,79,.66))}to{stroke:#f5ff63;opacity:1;filter:drop-shadow(0 0 11px rgba(245,255,99,1))}}.teach-highlight{fill:none;stroke-width:6;stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none}.teach-highlight.hidden,.teach-arrow.hidden{display:none}.teach-highlight.orange{stroke:#ff8b2d;filter:drop-shadow(0 0 6px rgba(255,139,45,.9));animation:teachGlowOrange .85s ease-in-out infinite alternate}.teach-highlight.turq{stroke:#16c6de;filter:drop-shadow(0 0 6px rgba(22,198,222,.95));animation:teachGlowTurq .85s ease-in-out infinite alternate}.teach-arrow{fill:none;stroke:#16c6de;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 5px rgba(22,198,222,.8));animation:teachGlowTurq .85s ease-in-out infinite alternate;pointer-events:none}.teach-arrow.arrowhead{fill:#16c6de;stroke:none;filter:drop-shadow(0 0 5px rgba(22,198,222,.8))}@keyframes teachGlowOrange{from{opacity:.74}to{opacity:1;stroke:#ff9d4d}}@keyframes teachGlowTurq{from{opacity:.74}to{opacity:1;stroke:#4de4f3}}.decade-select{width:100%;min-height:42px;padding:4px 8px;border:1px solid #8f98aa;border-radius:8px;background:rgba(255,255,255,.94);font-size:1.28rem;font-weight:950;color:#263044}.decade-select option{font-size:1.15rem;font-weight:900}.comp-row{display:flex;align-items:center;gap:6px}.comp-row .arrow{font-size:1.28rem;font-weight:950}.reset{width:100%;min-height:32px;margin-top:2px;padding:4px 7px;border:1px solid rgba(79,86,112,.22);border-radius:9px;background:rgba(255,255,255,.56);color:#41495a;font-size:.88rem;font-weight:900}
 
 /* Outils de droite */
-.side-tools{position:sticky;top:6px;display:grid;gap:7px}.tool-card{border:1px solid rgba(69,76,106,.28);border-radius:16px;background:linear-gradient(155deg,rgba(228,225,241,.94),rgba(217,228,236,.92));box-shadow:0 8px 20px rgba(52,54,80,.12);padding:8px}.keypad-title{text-align:center;font-size:1rem;font-weight:950}.keypad-context{text-align:center;min-height:18px;margin:2px 0 6px;color:#52596c;font-size:.77rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.keypad-grid button{min-height:48px;padding:0;border:1px solid #aeb4c2;border-radius:10px;background:rgba(255,255,255,.72);color:#242c3a;font-size:1.4rem;font-weight:950}.keypad-grid button:active{background:#d9dced}.keypad-grid button:disabled{opacity:.27;cursor:default}.keypad-grid .wide{grid-column:span 2}.keypad-hint{margin-top:5px;text-align:center;color:#666d7c;font-size:.64rem;line-height:1.2}.mirror-final{display:none}.mirror-final.visible{display:grid;gap:6px}.mirror-title{text-align:center;font-size:.72rem;font-weight:950;color:#596072;text-transform:uppercase;letter-spacing:.035em}.mirror-zone{border:2px solid;border-radius:12px;padding:7px 8px;transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}.mirror-zone.red{background:#edc1c8;border-color:var(--red)}.mirror-zone.blue{background:#bdd2ee;border-color:var(--blue)}.mirror-zone .zone-label{margin-bottom:5px}.mirror-decade{width:100%;min-height:44px;border:1px solid #8f98aa;border-radius:8px;background:#fff;padding:4px 8px;font-size:1.24rem;font-weight:950}.mirror-comp-row{display:flex;align-items:center;justify-content:center;gap:7px}.mirror-comp{width:62px;height:51px}.mirror-placeholder{text-align:center;color:#687081;font-size:.7rem;line-height:1.28;padding:2px 1px}.session-note{text-align:center;color:#50586a;font-size:.73rem;font-weight:800;margin-top:3px}.footer{text-align:center;color:#61687a;font-size:.66rem;margin-top:2px}
+.side-tools{position:sticky;top:6px;display:grid;gap:7px}.tool-card{border:1px solid rgba(69,76,106,.28);border-radius:16px;background:linear-gradient(155deg,rgba(228,225,241,.94),rgba(217,228,236,.92));box-shadow:0 8px 20px rgba(52,54,80,.12);padding:8px}.next-page-btn{display:none;width:100%;min-height:50px;border:2px solid #267655;border-radius:14px;background:linear-gradient(180deg,#49b77f,#329965);color:#fff;font-size:1rem;font-weight:950;box-shadow:0 8px 18px rgba(38,118,85,.24),inset 0 1px 0 rgba(255,255,255,.28);transition:transform .1s ease,filter .15s ease,box-shadow .15s ease}.next-page-btn.visible{display:block}.next-page-btn:hover{filter:brightness(1.05);box-shadow:0 10px 22px rgba(38,118,85,.3),inset 0 1px 0 rgba(255,255,255,.3)}.next-page-btn:active{transform:translateY(2px)}.keypad-title{text-align:center;font-size:1rem;font-weight:950}.keypad-context{text-align:center;min-height:18px;margin:2px 0 6px;color:#52596c;font-size:.77rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.keypad-grid button{min-height:48px;padding:0;border:1px solid #aeb4c2;border-radius:10px;background:rgba(255,255,255,.72);color:#242c3a;font-size:1.4rem;font-weight:950}.keypad-grid button:active{background:#d9dced}.keypad-grid button:disabled{opacity:.27;cursor:default}.keypad-grid .wide{grid-column:span 2}.keypad-hint{margin-top:5px;text-align:center;color:#666d7c;font-size:.64rem;line-height:1.2}.mirror-final{display:none}.mirror-final.visible{display:grid;gap:6px}.mirror-title{text-align:center;font-size:.72rem;font-weight:950;color:#596072;text-transform:uppercase;letter-spacing:.035em}.mirror-zone{border:2px solid;border-radius:12px;padding:7px 8px;transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}.mirror-zone.red{background:#edc1c8;border-color:var(--red)}.mirror-zone.blue{background:#bdd2ee;border-color:var(--blue)}.mirror-zone .zone-label{margin-bottom:5px}.mirror-decade{width:100%;min-height:44px;border:1px solid #8f98aa;border-radius:8px;background:#fff;padding:4px 8px;font-size:1.24rem;font-weight:950}.mirror-comp-row{display:flex;align-items:center;justify-content:center;gap:7px}.mirror-comp{width:62px;height:51px}.mirror-placeholder{text-align:center;color:#687081;font-size:.7rem;line-height:1.28;padding:2px 1px}.session-note{text-align:center;color:#50586a;font-size:.73rem;font-weight:800;margin-top:3px}.footer{text-align:center;color:#61687a;font-size:.66rem;margin-top:2px}
 .celebration{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}.bravo{position:absolute;top:12%;left:50%;transform:translateX(-50%) scale(.8);padding:8px 13px;border:3px solid var(--gold);border-radius:16px;background:#fff;color:var(--green);font-size:clamp(1.15rem,2.4vw,1.85rem);font-weight:950;opacity:0;box-shadow:0 10px 24px rgba(0,0,0,.13)}.celebration.show .bravo{animation:bravoPop 1.5s ease-out forwards}@keyframes bravoPop{0%{opacity:0;transform:translateX(-50%) scale(.75)}18%{opacity:1;transform:translateX(-50%) scale(1.07)}78%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.96)}}.confetti-piece{position:absolute;width:8px;height:13px;opacity:0;border-radius:2px;animation:confettiFall 1550ms linear forwards}@keyframes confettiFall{0%{opacity:1;transform:translateY(-10vh) rotate(0)}100%{opacity:0;transform:translateY(105vh) rotate(720deg)}}
 .series-flash{position:fixed;left:50%;top:16%;z-index:60;transform:translateX(-50%) scale(.85);padding:10px 16px;border-radius:15px;background:#fff;border:2px solid #8b91aa;font-size:1.2rem;font-weight:950;opacity:0;pointer-events:none}.series-flash.show{animation:seriesPop 1.25s ease-out forwards}@keyframes seriesPop{0%{opacity:0;transform:translateX(-50%) scale(.8)}15%{opacity:1;transform:translateX(-50%) scale(1.05)}78%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(.98)}}
 @media(prefers-reduced-motion:reduce){.pulse,.celebration.show .bravo,.confetti-piece,.series-flash.show,.unlock-card,.unlock-star,.activity-card.unlocked-next{animation:none}}
@@ -244,7 +244,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   <button id="masterBtn" class="master-btn" type="button" aria-pressed="false" title="Master mode">M</button>
   <section id="homeView" class="home">
     <div class="home-shell">
-      <div class="home-brand"><h1>Passage de dizaine</h1><span class="home-version">v1.7.2</span></div>
+      <div class="home-brand"><h1>Passage de dizaine</h1><span class="home-version">v1.7.6</span></div>
       <div class="home-top">
         <div class="home-copy">
           <h2>4 activités, un parcours simple</h2>
@@ -331,6 +331,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
           </div>
           <div class="keypad-hint">Le clavier physique fonctionne aussi. Aucun champ système n’est ouvert.</div>
         </section>
+        <button id="nextPageBtn" class="next-page-btn" type="button">Calcul suivant →</button>
         <section class="tool-card">
           <div id="mirrorFinal" class="mirror-final">
             <div class="mirror-title">Étape en cours</div>
@@ -348,7 +349,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
         <div id="sessionNote" class="session-note">15 calculs · 5 séries</div>
       </aside>
     </div>
-    <div class="footer">Projet <strong>passage-dizaine</strong> · v1.7.2</div>
+    <div class="footer">Projet <strong>passage-dizaine</strong> · v1.7.6</div>
   </section>
 
   <div id="celebration" class="celebration" aria-hidden="true"><div class="bravo">Bravo ! 🎉</div></div>
@@ -369,7 +370,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   const TOTAL_SERIES=5, PER_SERIES=3, TOTAL=TOTAL_SERIES*PER_SERIES, PASS_SCORE=Math.ceil(TOTAL*.8);
   const ACTIVITY_ORDER=['add','addmix','sub','submix'], STORAGE_KEY='passageDizaine.unlockLevel.v1', MASTER_SESSION_KEY='passageDizaine.masterMode.v1', MASTER_PASSWORD='Thecakeisalie';
   const homeView=document.getElementById('homeView'),practiceView=document.getElementById('practiceView'),root=document.getElementById('exercises'),masterBtn=document.getElementById('masterBtn');
-  const activityTitle=document.getElementById('activityTitle'),seriesPill=document.getElementById('seriesPill'),scorePill=document.getElementById('scorePill'),sessionNote=document.getElementById('sessionNote');
+  const activityTitle=document.getElementById('activityTitle'),seriesPill=document.getElementById('seriesPill'),scorePill=document.getElementById('scorePill'),sessionNote=document.getElementById('sessionNote'),nextPageBtn=document.getElementById('nextPageBtn');
   const keypadContext=document.getElementById('keypadContext'),keypadButtons=[...document.querySelectorAll('#keypadGrid button')];
   const mirrorFinal=document.getElementById('mirrorFinal'),mirrorPlaceholder=document.getElementById('mirrorPlaceholder'),mirrorRedZone=document.getElementById('mirrorRedZone'),mirrorRedLabel=document.getElementById('mirrorRedLabel'),mirrorDecade=document.getElementById('mirrorDecade'),mirrorDecadeFixed=document.getElementById('mirrorDecadeFixed'),mirrorBlueZone=document.getElementById('mirrorBlueZone'),mirrorBlueLabel=document.getElementById('mirrorBlueLabel'),mirrorComp=document.getElementById('mirrorComp');
   const celebration=document.getElementById('celebration'),seriesFlash=document.getElementById('seriesFlash');
@@ -455,7 +456,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
       <line x1="280" y1="50" x2="280" y2="417" stroke="#b6c0d8" stroke-width="10" stroke-linecap="round" opacity=".82"/>
       <line x1="280" y1="50" x2="280" y2="417" stroke="url(#axis-${slot})" stroke-width="5" stroke-linecap="round" filter="url(#shadow-${slot})"/>
       <line x1="252" y1="58" x2="308" y2="58" stroke="#586681" stroke-width="5" stroke-linecap="round"/>
-      <text data-k="topLabel" x="236" y="69" text-anchor="end" font-size="30" font-weight="950" fill="#20283a"></text>
+      <text data-k="topTens" x="214" y="70" text-anchor="end" font-size="34" font-weight="950" fill="#20283a"></text><text data-k="topUnit" x="240" y="70" text-anchor="end" font-size="38" font-weight="1000" fill="#20283a"></text>
       <line x1="238" y1="202" x2="322" y2="202" stroke="#b83349" stroke-width="7" stroke-linecap="round"/>
       <text data-k="tenLabel" x="220" y="213" text-anchor="end" font-size="28" font-weight="950" fill="#9f2537"></text>
       <path d="M400 54 C440 120 442 286 405 382" fill="none" stroke="#d7cef5" stroke-width="13" stroke-linecap="round" opacity=".55"/>
@@ -473,6 +474,15 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
       <foreignObject data-k="redZone" class="hidden" x="32" y="260" width="168" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone red"><div class="zone-label">Dizaine d’arrivée</div><select data-k="decade" class="decade-select" aria-label="Dizaine d’arrivée"><option value="">Choisir…</option></select></div></foreignObject>
       <rect data-k="blueCopyHighlight" class="copy-highlight hidden" x="322" y="367" width="188" height="94" rx="15" ry="15"/>
       <foreignObject data-k="blueZone" class="hidden" x="330" y="375" width="172" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone blue"><div class="zone-label">Complément de <span data-k="remaining"></span></div><div class="comp-row"><span class="arrow">→</span><div data-k="comp" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Complément"></div></div></div></foreignObject>
+      <rect data-k="firstStageBoxHighlight" class="teach-highlight orange hidden" x="390" y="80" width="156" height="98" rx="15" ry="15"/>
+      <rect data-k="startUnitHighlight" class="teach-highlight orange hidden" x="212" y="34" width="32" height="44" rx="5" ry="5"/>
+      <rect data-k="decompNumberHighlight" class="teach-highlight turq hidden" x="456" y="207" width="30" height="40" rx="4" ry="4"/>
+      <rect data-k="decompFirstHighlight" class="teach-highlight turq hidden" x="390" y="80" width="156" height="98" rx="15" ry="15"/>
+      <rect data-k="decompSecondHighlight" class="teach-highlight turq hidden" x="390" y="278" width="156" height="98" rx="15" ry="15"/>
+      <path data-k="decompArrowTop" class="teach-arrow hidden" d="M465 222 C500 208 510 188 507 176"/>
+      <path data-k="decompArrowTopHead" class="teach-arrow arrowhead hidden" d="M501 180 L509 168 L512 182 Z"/>
+      <path data-k="decompArrowBottom" class="teach-arrow hidden" d="M465 242 C500 258 510 276 507 290"/>
+      <path data-k="decompArrowBottomHead" class="teach-arrow arrowhead hidden" d="M501 285 L509 297 L512 283 Z"/>
     </svg>`}
 
   function addSvg(slot){return `
@@ -487,7 +497,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
       <line x1="280" y1="50" x2="280" y2="417" stroke="#b6c0d8" stroke-width="10" stroke-linecap="round" opacity=".82"/>
       <line x1="280" y1="50" x2="280" y2="417" stroke="url(#axis-${slot})" stroke-width="5" stroke-linecap="round" filter="url(#shadow-${slot})"/>
       <line x1="252" y1="405" x2="308" y2="405" stroke="#586681" stroke-width="5" stroke-linecap="round"/>
-      <text data-k="startLabel" x="236" y="416" text-anchor="end" font-size="30" font-weight="950" fill="#20283a"></text>
+      <text data-k="startTens" x="214" y="417" text-anchor="end" font-size="34" font-weight="950" fill="#20283a"></text><text data-k="startUnit" x="240" y="417" text-anchor="end" font-size="38" font-weight="1000" fill="#20283a"></text>
       <line x1="238" y1="245" x2="322" y2="245" stroke="#b83349" stroke-width="7" stroke-linecap="round"/>
       <path d="M405 405 C442 318 442 155 400 68" fill="none" stroke="#d7cef5" stroke-width="13" stroke-linecap="round" opacity=".55"/>
       <path d="M405 405 C442 318 442 155 400 68" fill="none" stroke="#8c79d9" stroke-width="6" stroke-linecap="round" filter="url(#shadow-${slot})"/>
@@ -504,6 +514,15 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
       <foreignObject data-k="redZone" class="hidden" x="36" y="112" width="174" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone red"><div class="zone-label">Dizaine d’arrivée</div><select data-k="decade" class="decade-select" aria-label="Dizaine d’arrivée"><option value="">Choisir…</option></select></div></foreignObject>
       <rect data-k="blueCopyHighlight" class="copy-highlight hidden" x="390" y="104" width="156" height="98" rx="15" ry="15"/>
       <foreignObject data-k="blueZone" class="hidden" x="330" y="78" width="172" height="78"><div xmlns="http://www.w3.org/1999/xhtml" class="zone blue"><div class="zone-label">Reste à ajouter</div><div class="comp-row"><span class="arrow">→</span><div data-k="comp" class="digit-entry pulse" tabindex="0" role="textbox" aria-label="Reste à ajouter"></div></div></div></foreignObject>
+      <rect data-k="firstStageBoxHighlight" class="teach-highlight orange hidden" x="390" y="286" width="156" height="98" rx="15" ry="15"/>
+      <rect data-k="startUnitHighlight" class="teach-highlight orange hidden" x="212" y="381" width="32" height="44" rx="5" ry="5"/>
+      <rect data-k="decompNumberHighlight" class="teach-highlight turq hidden" x="458" y="220" width="28" height="38" rx="4" ry="4"/>
+      <rect data-k="decompFirstHighlight" class="teach-highlight turq hidden" x="390" y="286" width="156" height="98" rx="15" ry="15"/>
+      <rect data-k="decompSecondHighlight" class="teach-highlight turq hidden" x="390" y="104" width="156" height="98" rx="15" ry="15"/>
+      <path data-k="decompArrowTop" class="teach-arrow hidden" d="M466 238 C500 224 512 208 508 196"/>
+      <path data-k="decompArrowTopHead" class="teach-arrow arrowhead hidden" d="M502 200 L510 188 L513 202 Z"/>
+      <path data-k="decompArrowBottom" class="teach-arrow hidden" d="M466 258 C500 270 512 286 508 298"/>
+      <path data-k="decompArrowBottomHead" class="teach-arrow arrowhead hidden" d="M502 293 L510 305 L513 291 Z"/>
     </svg>`}
 
   function shell(slot,mode){
@@ -527,7 +546,8 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   keypadButtons.forEach(btn=>btn.addEventListener('click',()=>btn.dataset.digit!==undefined?enterDigit(btn.dataset.digit):clearDigit()));
   document.addEventListener('keydown',e=>{if(practiceView.classList.contains('hidden'))return;const tag=document.activeElement?.tagName;if(tag==='SELECT'||tag==='BUTTON')return;if(/^[0-9]$/.test(e.key)){e.preventDefault();enterDigit(e.key)}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();clearDigit()}});
 
-  function activate(panel,{autoStart=false}={}){activePanel=panel;activeController=panel._controller;root.querySelectorAll('.exercise').forEach(p=>{const on=p===panel;p.classList.toggle('active',on);p.classList.toggle('inactive',!on)});syncMirror();if(autoStart&&panel.dataset.finished!=='1')activeController.start()}
+  function updateNextPageButton(){if(!nextPageBtn)return;const show=!!activePanel&&activePanel.dataset.finished==='1';nextPageBtn.classList.toggle('visible',show);if(!show)return;const unfinished=[...root.querySelectorAll('.exercise')].some(p=>p.dataset.finished!=='1');nextPageBtn.textContent=unfinished?'Calcul suivant →':(currentSeries<TOTAL_SERIES-1?'Série suivante →':'Terminer ✓')}
+  function activate(panel,{autoStart=false}={}){activePanel=panel;activeController=panel._controller;root.querySelectorAll('.exercise').forEach(p=>{const on=p===panel;p.classList.toggle('active',on);p.classList.toggle('inactive',!on)});syncMirror();updateNextPageButton();if(autoStart&&panel.dataset.finished!=='1')activeController.start()}
   function syncMirror(){
     if(!activeController||!activeController.stage3Visible()){setMirrorVisible(false);return}
     setMirrorVisible(true);
@@ -547,7 +567,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   function allFinished(){return [...root.querySelectorAll('.exercise')].every(p=>p.dataset.finished==='1')}
   function activateNext(panel){const panels=[...root.querySelectorAll('.exercise')],start=panels.indexOf(panel);for(let o=1;o<=panels.length;o++){const p=panels[(start+o)%panels.length];if(p.dataset.finished!=='1'){activate(p,{autoStart:true});return}}if(allFinished())finishSeries()}
   function finishSeries(){
-    activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);
+    activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);if(nextPageBtn)nextPageBtn.classList.remove('visible');
     if(currentSeries<TOTAL_SERIES-1){flashSeries('Série '+(currentSeries+1)+' terminée ✓');seriesAdvanceTimer=setTimeout(()=>{currentSeries++;updateStatus();loadSeries()},1250);return}
     const passed=score>=PASS_SCORE,idx=ACTIVITY_ORDER.indexOf(activity);if(!mathasSaved){enregistrerScoreMathas(score,TOTAL,titleFor(activity));mathasSaved=true}flashSeries('Partie terminée : '+score+'/'+TOTAL+(passed?' ✓':' · objectif '+PASS_SCORE+'/'+TOTAL));
     sessionNote.textContent=passed?'Partie terminée · '+score+'/'+TOTAL+' sans erreur · objectif atteint':'Partie terminée · '+score+'/'+TOTAL+' sans erreur · il faut '+PASS_SCORE+'/'+TOTAL+' pour débloquer la suite';
@@ -565,10 +585,23 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
     function clearReadyHints(){[mainRedHintEl(),mainBlueHintEl(),q('noPassView')?.querySelector('.no-pass-zone.red'),q('noPassView')?.querySelector('.no-pass-zone.blue'),mirrorRedZone,mirrorBlueZone].filter(Boolean).forEach(el=>el.classList.remove('ready-hint'));['redCopyHighlight','blueCopyHighlight'].forEach(k=>{const el=q(k);if(el)el.classList.add('hidden')})}
     function applyReadyHints(){clearReadyHints();if(isPassage){const redEl=mainRedHintEl();const blueEl=mainBlueHintEl();if(redEl)redEl.classList.add('ready-hint');if(blueEl)blueEl.classList.add('ready-hint');const redSvg=q('redCopyHighlight'),blueSvg=q('blueCopyHighlight');if(redSvg)redSvg.classList.remove('hidden');if(blueSvg)blueSvg.classList.remove('hidden');if(!mirrorRedZone.classList.contains('hidden'))mirrorRedZone.classList.add('ready-hint');if(!mirrorBlueZone.classList.contains('hidden'))mirrorBlueZone.classList.add('ready-hint')}else{q('noPassView')?.querySelectorAll('.no-pass-zone').forEach(el=>el.classList.add('ready-hint'));if(!mirrorRedZone.classList.contains('hidden'))mirrorRedZone.classList.add('ready-hint');if(!mirrorBlueZone.classList.contains('hidden'))mirrorBlueZone.classList.add('ready-hint')}}
     function resetResultEntry(){const el=q('resultEntry');el.dataset.value='';el.dataset.locked='0';el.classList.remove('locked','ready','pulse','direct-win');el.setAttribute('tabindex','0');q('ansTens').textContent='?';q('ansOnes').textContent='?';clearReadyHints()}
+    function clearTeachingHints(){['firstStageBoxHighlight','startUnitHighlight','decompNumberHighlight','decompFirstHighlight','decompSecondHighlight','decompArrowTop','decompArrowTopHead','decompArrowBottom','decompArrowBottomHead'].forEach(k=>{const el=q(k);if(el)el.classList.add('hidden')})}
+    function updateTeachingHints(){
+      clearTeachingHints();
+      if(!isPassage||finished)return;
+      const seg1=q('seg1'),seg2=q('seg2');
+      if(seg1 && !seg1.classList.contains('hidden') && q('first').dataset.locked!=='1'){
+        ['firstStageBoxHighlight','startUnitHighlight'].forEach(k=>{const el=q(k);if(el)el.classList.remove('hidden')});
+        return;
+      }
+      if(seg2 && !seg2.classList.contains('hidden') && q('second').dataset.locked!=='1'){
+        ['decompNumberHighlight','decompFirstHighlight','decompSecondHighlight','decompArrowTop','decompArrowTopHead','decompArrowBottom','decompArrowBottomHead'].forEach(k=>{const el=q(k);if(el)el.classList.remove('hidden')});
+      }
+    }
     function renderResultValue(str){const s=(str||'').slice(0,2);q('ansTens').textContent=s[0]||'?';q('ansOnes').textContent=s[1]||'?';q('resultEntry').dataset.value=s}
-    function maybeActivateFinal(){if(finished||!(solvedTens&&solvedOnes))return;const el=q('resultEntry');applyReadyHints();el.classList.add('ready','pulse');el.setAttribute('tabindex','0');q('step').textContent='Écris la réponse';focusEntry(el,'Réponse')}
+    function maybeActivateFinal(){if(finished||!(solvedTens&&solvedOnes))return;const el=q('resultEntry');clearTeachingHints();applyReadyHints();el.classList.add('ready','pulse');el.setAttribute('tabindex','0');q('step').textContent='Écris la réponse';focusEntry(el,'Réponse')}
     function buildDecades(){const sel=q('decade');sel.innerHTML='<option value="">Choisir…</option>';const near=[];for(let d=1;d<=9;d++){if(decade-d>=0)near.push(decade-d);if(decade+d<=9)near.push(decade+d)}const choices=shuffle([decade,...near.filter(x=>x!==decade).slice(0,4)]);choices.forEach(d=>{const o=document.createElement('option');o.value=String(d);o.textContent=d+'…';sel.appendChild(o)})}
-    function startPassage(){q('passageView').classList.remove('hidden');q('noPassView').classList.add('hidden');q('seg1').classList.remove('hidden');q('step').textContent=type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine';focusEntry(q('first'),type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine')}
+    function startPassage(){q('passageView').classList.remove('hidden');q('noPassView').classList.add('hidden');q('seg1').classList.remove('hidden');q('step').textContent=type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine';updateTeachingHints();focusEntry(q('first'),type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine')}
     function unitExpression(){const u=ex.a%10,op=type==='sub'?'−':'+';return 'Unités : '+u+' '+op+' '+ex.b}
     function startNoPass(){
       q('passageView').classList.add('hidden');q('noPassView').classList.remove('hidden');stage3=true;redVisible=true;blueVisible=true;blueVal=null;
@@ -584,13 +617,13 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
     }
     function evaluateFirst(v){
       q('first').textContent=v==null?'':String(v);
-      if(v===first){lockEntry(q('first'));q('seg2').classList.remove('hidden');q('resultMark').classList.remove('hidden');q('step').textContent=type==='sub'?'Reste à enlever':'Reste à ajouter';if(type==='add'){stage3=true;blueVisible=true;redVisible=false;blueVal=null;if(activeController===controller)syncMirror()}focusEntry(q('second'),type==='sub'?'Reste à enlever':'Reste à ajouter')}
-      else if(v!==null){markError();q('step').textContent=type==='sub'?'La flèche bleue doit arriver sur '+Math.floor(ex.a/10)*10:'Complète exactement jusqu’à la ligne';focusEntry(q('first'),type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine')}
+      if(v===first){lockEntry(q('first'));q('seg2').classList.remove('hidden');q('resultMark').classList.remove('hidden');q('step').textContent=type==='sub'?'Reste à enlever':'Reste à ajouter';if(type==='add'){stage3=true;blueVisible=true;redVisible=false;blueVal=null;if(activeController===controller)syncMirror()}updateTeachingHints();focusEntry(q('second'),type==='sub'?'Reste à enlever':'Reste à ajouter')}
+      else if(v!==null){markError();q('step').textContent=type==='sub'?'La flèche bleue doit arriver sur '+Math.floor(ex.a/10)*10:'Complète exactement jusqu’à la ligne';updateTeachingHints();focusEntry(q('first'),type==='sub'?'Jusqu’à la dizaine':'Complète la dizaine')}
     }
     function evaluateSecond(v){
       q('second').textContent=v==null?'':String(v);if(type==='add'){blueVal=v;if(activeController===controller)mirrorComp.textContent=v==null?'':String(v)}
-      if(v===rem){lockEntry(q('second'));if(type==='sub'){q('redZone').classList.remove('hidden');q('blueZone').classList.remove('hidden');stage3=true;redVisible=true;blueVisible=true;q('step').textContent='Complément de '+rem+' · puis choisis la dizaine';if(activeController===controller){syncMirror();requestAnimationFrame(()=>focusEntry(mirrorComp,'Complément de '+rem))}else focusEntry(q('comp'),'Complément de '+rem)}else{solvedOnes=true;blueVal=rem;redVisible=true;blueVisible=true;stage3=true;q('redZone').classList.remove('hidden');q('step').textContent='Choisis la dizaine d’arrivée';activeEntry=null;setKeypadEnabled(false);keypadContext.textContent='Choisis la dizaine';if(activeController===controller){syncMirror();requestAnimationFrame(()=>mirrorDecade.focus({preventScroll:true}))}else q('decade').focus({preventScroll:true})}}
-      else if(v!==null){markError();q('step').textContent=type==='sub'?'Cette partie termine la flèche de '+ex.b:'Quel reste faut-il ajouter après la dizaine ?';focusEntry(q('second'),type==='sub'?'Reste à enlever':'Reste à ajouter');if(type==='add'&&activeController===controller)syncMirror()}
+      if(v===rem){lockEntry(q('second'));if(type==='sub'){q('redZone').classList.remove('hidden');q('blueZone').classList.remove('hidden');stage3=true;redVisible=true;blueVisible=true;q('step').textContent='Complément de '+rem+' · puis choisis la dizaine';if(activeController===controller){syncMirror();requestAnimationFrame(()=>focusEntry(mirrorComp,'Complément de '+rem))}else focusEntry(q('comp'),'Complément de '+rem)}else{solvedOnes=true;blueVal=rem;redVisible=true;blueVisible=true;stage3=true;q('redZone').classList.remove('hidden');q('step').textContent='Choisis la dizaine d’arrivée';activeEntry=null;setKeypadEnabled(false);keypadContext.textContent='Choisis la dizaine';if(activeController===controller){syncMirror();requestAnimationFrame(()=>mirrorDecade.focus({preventScroll:true}))}else q('decade').focus({preventScroll:true})}updateTeachingHints()}
+      else if(v!==null){markError();q('step').textContent=type==='sub'?'Cette partie termine la flèche de '+ex.b:'Quel reste faut-il ajouter après la dizaine ?';updateTeachingHints();focusEntry(q('second'),type==='sub'?'Reste à enlever':'Reste à ajouter');if(type==='add'&&activeController===controller)syncMirror()}
     }
     function setDecade(value,fromMirror=false){
       if(!isPassage)return;
@@ -616,12 +649,12 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
       else solvedOnes=false;if(activeController===controller)syncMirror();
     }
     function reset(){
-      ['seg1','seg2','resultMark','redZone','blueZone'].forEach(k=>q(k).classList.add('hidden'));['first','second','comp','unitEntry'].forEach(k=>resetEntry(q(k)));q('decade').value='';resetResultEntry();q('ghost').textContent='?';q('decisionFeedback').textContent='';q('decisionView').classList.add('hidden');q('noPassView').classList.add('hidden');q('passageView').classList.toggle('hidden',mixed);q('step').innerHTML=mixed?'':('Observe la flèche de <strong>'+ex.b+'</strong>.');started=false;finished=false;stage3=false;redVisible=false;blueVisible=false;blueVal=null;solvedTens=false;solvedOnes=false;directSolved=false;classificationDone=!mixed;panel.dataset.finished='0';panel.dataset.scored='0';if(activeController===controller){activeEntry=null;setKeypadEnabled(false);syncMirror()}
+      ['seg1','seg2','resultMark','redZone','blueZone'].forEach(k=>q(k).classList.add('hidden'));clearTeachingHints();['first','second','comp','unitEntry'].forEach(k=>resetEntry(q(k)));q('decade').value='';resetResultEntry();q('ghost').textContent='?';q('decisionFeedback').textContent='';q('decisionView').classList.add('hidden');q('noPassView').classList.add('hidden');q('passageView').classList.toggle('hidden',mixed);q('step').innerHTML=mixed?'':('Observe la flèche de <strong>'+ex.b+'</strong>.');started=false;finished=false;stage3=false;redVisible=false;blueVisible=false;blueVal=null;solvedTens=false;solvedOnes=false;directSolved=false;classificationDone=!mixed;panel.dataset.finished='0';panel.dataset.scored='0';if(activeController===controller){activeEntry=null;setKeypadEnabled(false);syncMirror()}
     }
     function load(problem){
       ex=problem;errorMade=false;isPassage=problem.passes!==false;result=type==='sub'?ex.a-ex.b:ex.a+ex.b;decade=Math.floor(result/10);
-      if(type==='sub'){const ten=Math.floor(ex.a/10)*10;first=ex.a-ten;rem=ex.b-first;q('topLabel').textContent=ex.a;q('tenLabel').textContent=ten;q('remaining').textContent=rem}
-      else{const nextTen=Math.ceil(ex.a/10)*10;first=nextTen-ex.a;rem=ex.b-first;q('startLabel').textContent=ex.a}
+      if(type==='sub'){const ten=Math.floor(ex.a/10)*10;first=ex.a-ten;rem=ex.b-first;q('topTens').textContent=Math.floor(ex.a/10);q('topUnit').textContent=ex.a%10;q('tenLabel').textContent=ten;q('remaining').textContent=rem}
+      else{const nextTen=Math.ceil(ex.a/10)*10;first=nextTen-ex.a;rem=ex.b-first;q('startTens').textContent=Math.floor(ex.a/10);q('startUnit').textContent=ex.a%10}
       q('a').textContent=ex.a;q('b').textContent=ex.b;q('fullLabel').textContent=ex.b;buildDecades();reset();
     }
     function start(){if(started||finished)return;started=true;if(mixed&&!classificationDone){q('passageView').classList.add('hidden');q('noPassView').classList.add('hidden');q('decisionView').classList.remove('hidden');q('step').textContent='Passage de dizaine ?';activeEntry=null;setKeypadEnabled(false);setMirrorVisible(false);return}isPassage?startPassage():startNoPass()}
@@ -632,7 +665,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
         q('step').textContent=directSolved?'Bravo ! Réponse directe.':'Bravo !';
         q('resultEntry').dataset.locked='1';q('resultEntry').classList.add('locked');q('resultEntry').classList.remove('pulse');q('resultEntry').setAttribute('tabindex','0');
         if(directSolved)q('resultEntry').classList.add('direct-win');
-        if(!finished){finished=true;panel.dataset.finished='1';if(panel.dataset.scored!=='1'){panel.dataset.scored='1';if(!errorMade)score++;updateStatus()}celebrate();activeEntry=null;setKeypadEnabled(false);autoAdvanceTimer=setTimeout(()=>activateNext(panel),1050)}
+        if(!finished){finished=true;panel.dataset.finished='1';if(panel.dataset.scored!=='1'){panel.dataset.scored='1';if(!errorMade)score++;updateStatus()}celebrate();activeEntry=null;setKeypadEnabled(false);updateNextPageButton();autoAdvanceTimer=setTimeout(()=>activateNext(panel),1050)}
       }
     }
     const controller={start,load,reset,stage3Visible:()=>stage3,redVisible:()=>redVisible,blueVisible:()=>blueVisible,redFixedValue:()=>isPassage?null:decade,blueLabel:()=>!isPassage?unitExpression():(type==='sub'?'Complément de '+rem:'Reste à ajouter'),decadeOptionsHtml:()=>q('decade').innerHTML,decadeValue:()=>q('decade').value,blueValue:()=>!isPassage?blueVal:(type==='add'?(q('second').textContent===''?null:Number(q('second').textContent)):blueVal),blueLocked:()=>!isPassage?q('unitEntry').dataset.locked==='1':(type==='add'?q('second').dataset.locked==='1':q('comp').dataset.locked==='1'),setDecade,setBlue};
@@ -648,7 +681,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   function buildPanels(){root.innerHTML=shell(0,activity)+shell(1,activity)+shell(2,activity);[...root.querySelectorAll('.exercise')].forEach(p=>setup(p,activity))}
   mirrorDecade.addEventListener('focus',()=>{activeEntry=null;setKeypadEnabled(false);keypadContext.textContent='Choisis la dizaine'});mirrorDecade.addEventListener('change',()=>{if(activeController)activeController.setDecade(mirrorDecade.value,true)});mirrorComp._setDigit=v=>{if(activeController)activeController.setBlue(v,'mirror')};mirrorComp.addEventListener('focus',()=>focusEntry(mirrorComp,activeController?.blueLabel()||'Valeur'));mirrorComp.addEventListener('click',()=>mirrorComp.focus());
 
-  function loadSeries(){if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}if(seriesAdvanceTimer){clearTimeout(seriesAdvanceTimer);seriesAdvanceTimer=null}const panels=[...root.querySelectorAll('.exercise')];panels.forEach((p,i)=>p._controller.load(problems[currentSeries*PER_SERIES+i]));sessionNote.textContent='Série '+(currentSeries+1)+' sur '+TOTAL_SERIES+' · score = calculs sans erreur · objectif '+PASS_SCORE+'/'+TOTAL;activate(panels[0],{autoStart:true})}
+  function loadSeries(){if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}if(seriesAdvanceTimer){clearTimeout(seriesAdvanceTimer);seriesAdvanceTimer=null}if(nextPageBtn)nextPageBtn.classList.remove('visible');const panels=[...root.querySelectorAll('.exercise')];panels.forEach((p,i)=>p._controller.load(problems[currentSeries*PER_SERIES+i]));sessionNote.textContent='Série '+(currentSeries+1)+' sur '+TOTAL_SERIES+' · score = calculs sans erreur · objectif '+PASS_SCORE+'/'+TOTAL;activate(panels[0],{autoStart:true})}
   function newGame(){problems=generateSession(activity);currentSeries=0;score=0;mathasSaved=false;updateStatus();buildPanels();loadSeries()}
   function titleFor(mode){return {sub:'Soustraire en passant une dizaine',add:'Additionner en passant une dizaine',submix:'Soustraire : avec ou sans passage',addmix:'Additionner : avec ou sans passage'}[mode]}
   function showPractice(mode){activity=mode;practiceView.dataset.activity=mode;activityTitle.textContent=titleFor(mode);homeView.classList.add('hidden');practiceView.classList.remove('hidden');newGame()}
@@ -656,7 +689,7 @@ button,select{font:inherit}button{cursor:pointer;font-weight:850}.hidden{display
   const fullscreenBtn=document.getElementById('fullscreenBtn');
   function syncFullscreenBtn(){if(!fullscreenBtn)return;const on=!!document.fullscreenElement;fullscreenBtn.textContent=on?'⛶ Quitter':'⛶ Plein écran';fullscreenBtn.title=on?'Quitter le plein écran':'Afficher en plein écran'}
   if(fullscreenBtn){fullscreenBtn.addEventListener('click',async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen()}else{await document.exitFullscreen()}}catch(e){fullscreenBtn.textContent='Plein écran indisponible';setTimeout(syncFullscreenBtn,1200)}});document.addEventListener('fullscreenchange',syncFullscreenBtn);syncFullscreenBtn()}
-  masterBtn.addEventListener('click',()=>{if(masterMode){masterMode=false;persistMasterMode(false);syncMasterButton();renderHomeLocks();return}const entered=window.prompt('Mot de passe Master Mode :');if(entered===null)return;if(entered===MASTER_PASSWORD){masterMode=true;persistMasterMode(true);syncMasterButton();renderHomeLocks()}else{window.alert('Mot de passe incorrect.')}});document.querySelectorAll('[data-start-activity]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.startActivity;if(ACTIVITY_ORDER.indexOf(mode)<=effectiveUnlockLevel())showPractice(mode)}));document.getElementById('homeBtn').addEventListener('click',showHome);document.getElementById('newGameBtn').addEventListener('click',newGame);syncMasterButton();updateStatus();setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks();
+  masterBtn.addEventListener('click',()=>{if(masterMode){masterMode=false;persistMasterMode(false);syncMasterButton();renderHomeLocks();return}const entered=window.prompt('Mot de passe Master Mode :');if(entered===null)return;if(entered===MASTER_PASSWORD){masterMode=true;persistMasterMode(true);syncMasterButton();renderHomeLocks()}else{window.alert('Mot de passe incorrect.')}});document.querySelectorAll('[data-start-activity]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.startActivity;if(ACTIVITY_ORDER.indexOf(mode)<=effectiveUnlockLevel())showPractice(mode)}));document.getElementById('homeBtn').addEventListener('click',showHome);document.getElementById('newGameBtn').addEventListener('click',newGame);nextPageBtn.addEventListener('click',()=>{if(autoAdvanceTimer){clearTimeout(autoAdvanceTimer);autoAdvanceTimer=null}if(seriesAdvanceTimer){clearTimeout(seriesAdvanceTimer);seriesAdvanceTimer=null}if(!activePanel||activePanel.dataset.finished!=='1')return;const panels=[...root.querySelectorAll('.exercise')];const unfinished=panels.filter(p=>p.dataset.finished!=='1');if(unfinished.length){const idx=panels.indexOf(activePanel);for(let o=1;o<=panels.length;o++){const p=panels[(idx+o)%panels.length];if(p.dataset.finished!=='1'){activate(p,{autoStart:true});return}}}if(currentSeries<TOTAL_SERIES-1){flashSeries('Série '+(currentSeries+1)+' terminée ✓');currentSeries++;updateStatus();loadSeries();return}finishSeries();});syncMasterButton();updateStatus();setKeypadEnabled(false);setMirrorVisible(false);renderHomeLocks();
 })();
 </script>
 </body>
